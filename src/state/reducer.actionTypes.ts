@@ -1,0 +1,2 @@
+export const SET_TIME_SPAN_FROM = 'SET_TIME_SPAN_FROM';
+export const SET_TIME_SPAN_TO = 'SET_TIME_SPAN_TO';
