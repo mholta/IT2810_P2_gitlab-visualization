@@ -13,7 +13,8 @@ export const theme = createTheme({
       main: '#E69C34'
     },
     text: {
-      primary: '#fef2f2',
+      primary: 'black', // to be able to see the text
+      // primary: '#fef2f2',
       secondary: 'lightgrey'
     }
   },

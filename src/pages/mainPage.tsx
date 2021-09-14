@@ -1,17 +1,18 @@
-import { withTheme } from "@material-ui/core";
-import React, { useState } from "react";
-import styled from "styled-components";
-import { Main } from "../components/layout";
+import { withTheme } from '@material-ui/core';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Main } from '../components/layout';
+import Skeleton from '../components/skeleton';
 
 const MainPage = () => {
   const [invert, setInvert] = useState<boolean>(false);
 
   return (
     <Main>
-      MainPage
-      <BoxWithPropsAndTheme invert={invert} onClick={() => setInvert(!invert)}>
+      <Skeleton />
+      {/* <BoxWithPropsAndTheme invert={invert} onClick={() => setInvert(!invert)}>
         Box
-      </BoxWithPropsAndTheme>
+      </BoxWithPropsAndTheme> */}
     </Main>
   );
 };
@@ -33,7 +34,7 @@ const BoxWithPropsAndTheme = withTheme(styled.div<BoxProps>`
     background-color: ${(props) => props.theme.palette.primary.light};
   }
 
-  ${(props) => props.theme.breakpoints.down("sm")} {
+  ${(props) => props.theme.breakpoints.down('sm')} {
     background-color: red;
   }
 `);

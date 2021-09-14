@@ -3,13 +3,16 @@ import './App.css';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/theme';
 import MainPage from './pages/mainPage';
+import { MuiThemeProvider } from '@material-ui/core';
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      {/* Put context here */}
-      <MainPage />
-    </ThemeProvider>
+    <MuiThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        {/* Put context here */}
+        <MainPage />
+      </ThemeProvider>
+    </MuiThemeProvider>
   );
 }
 
