@@ -1,14 +1,18 @@
-import React from 'react';
-import Context from './context';
-import { useGlobalState } from './useGlobalState';
+import React, { useReducer } from 'react';
+import { GlobalContext } from './context';
+import { initialGlobalState, reducer } from './reducer';
 
 interface GlobalStateProviderProps {
   children: React.ReactChild | React.ReactChild[];
 }
 
 const GlobalStateProvider = ({ children }: GlobalStateProviderProps) => {
+  const [state, dispatch] = useReducer(reducer, initialGlobalState);
+
   return (
-    <Context.Provider value={useGlobalState()}>{children}</Context.Provider>
+    <GlobalContext.Provider value={{ state, dispatch }}>
+      {children}
+    </GlobalContext.Provider>
   );
 };
 

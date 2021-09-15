@@ -1,5 +1,15 @@
-import { createContext } from 'react';
+import { createContext, Dispatch } from 'react';
+import { initialGlobalState } from './reducer';
+import { GlobalStateObject } from './types';
 
-const Context = createContext({});
+interface GlobalStateContextProps {
+  state: GlobalStateObject;
+  dispatch: Dispatch<any>;
+}
 
-export default Context;
+export const GlobalContext = createContext<GlobalStateContextProps>({
+  state: initialGlobalState,
+  dispatch: () => null
+});
+
+export default GlobalContext;

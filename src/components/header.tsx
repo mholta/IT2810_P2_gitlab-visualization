@@ -1,15 +1,20 @@
 import { Toolbar } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import React from 'react';
+import { setMenuOpen } from '../state/reducer.actions';
+import { useGlobalState } from '../state/useGlobalState';
 
-type props = {
-  openMenu: React.Dispatch<React.SetStateAction<boolean>>;
-};
+const Header = () => {
+  const { dispatch, state } = useGlobalState();
 
-const Header = ({ openMenu }: props) => {
   return (
     <Toolbar>
-      <MenuIcon onClick={() => openMenu(true)} />
+      <MenuIcon
+        onClick={() => {
+          dispatch(setMenuOpen(true));
+          console.log(state.menuOpen);
+        }}
+      />
     </Toolbar>
   );
 };

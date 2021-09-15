@@ -1,8 +1,4 @@
-import { useReducer } from 'react';
-import { initialGlobalState, reducer } from './reducer';
+import React from 'react';
+import GlobalContext from './context';
 
-export const useGlobalState = () => {
-  const [globalState, globalDispatch] = useReducer(reducer, initialGlobalState);
-
-  return { state: globalState, dispatch: globalDispatch };
-};
+export const useGlobalState = () => React.useContext(GlobalContext);

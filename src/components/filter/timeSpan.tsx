@@ -2,16 +2,16 @@ import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import styled from 'styled-components';
-import { getDateMinusDays } from '../utils/date';
-import { setTimespanFrom, setTimespanTo } from './reducer.actions';
-import { useGlobalState } from './useGlobalState';
-import DatePicker from '../components/filter/datePicker';
+import { getDateMinusDays } from '../../utils/date';
+import { setTimespanFrom, setTimespanTo } from '../../state/reducer.actions';
+import { useGlobalState } from '../../state/useGlobalState';
+import DatePicker from '../../components/filter/datePicker';
 
-const ContextExample = () => {
+const TimeSpan = () => {
   const { state, dispatch } = useGlobalState();
 
   const setFromDate = (date: Date | null) => {
-    if (date && state.timeSpan.to && date > state.timeSpan.to) {
+    if (date && state.filter.timeSpan.to && date > state.filter.timeSpan.to) {
       dispatch(setTimespanTo(getDateMinusDays(new Date(date), -1)));
     }
 
@@ -19,7 +19,11 @@ const ContextExample = () => {
   };
 
   const setToDate = (date: Date | null) => {
-    if (date && state.timeSpan.from && date < state.timeSpan.from) {
+    if (
+      date &&
+      state.filter.timeSpan.from &&
+      date < state.filter.timeSpan.from
+    ) {
       dispatch(setTimespanFrom(getDateMinusDays(new Date(date), 1)));
     }
 
@@ -28,36 +32,30 @@ const ContextExample = () => {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      From: {state.timeSpan.from?.toLocaleDateString()}
-      <br />
-      To: {state.timeSpan.to?.toLocaleDateString()}
-      <ContextExampleWrapper>
+      {state.filter.timeSpan.from?.toLocaleDateString()}
+      <TimeSpanWrapper>
         <DatePicker
           id="date-picker-from"
           label="Fra"
-          value={state.timeSpan.from}
+          value={state.filter.timeSpan.from}
           onChange={setFromDate}
           enableClearButton
         />
         <DatePicker
           id="date-picker-to"
           label="Til"
-          value={state.timeSpan.to}
+          value={state.filter.timeSpan.to}
           onChange={setToDate}
         />
-      </ContextExampleWrapper>
+      </TimeSpanWrapper>
     </MuiPickersUtilsProvider>
   );
 };
 
-const ContextExampleWrapper = styled.div`
-  padding: 4rem;
-  display: flex;
-  justify-content: center;
-
-  & > * {
-    margin: 0 2rem;
-  }
+const TimeSpanWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
 `;
 
-export default ContextExample;
+export default TimeSpan;

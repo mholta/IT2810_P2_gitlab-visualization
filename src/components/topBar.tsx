@@ -1,7 +1,7 @@
 import { Toolbar } from '@material-ui/core';
 
-const FilterBar = () => {
+const TopBar = () => {
   return <Toolbar></Toolbar>;
 };
 
-export default FilterBar;
+export default TopBar;
