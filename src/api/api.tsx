@@ -10,19 +10,9 @@ const header = {
 };
 
 export enum GitLabTypes {
-  Users = 'USERS',
   Commits = 'COMMITS',
   Issues = 'ISSUES'
 }
-
-export const fetchUsers = () => {
-  return new Promise<any>((resolve) => {
-    fetch(endpoint + 'users', header)
-      .then((res) => res.json())
-      .then((commits) => resolve(commits))
-      .catch((err) => rejects(err));
-  });
-};
 
 export const fetchCommits = (since: Date, until: Date) => {
   return new Promise<any>((resolve) => {
