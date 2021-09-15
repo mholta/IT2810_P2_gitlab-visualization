@@ -4,11 +4,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SwipeableDrawer
+  SwipeableDrawer,
+  withTheme
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Theme, makeStyles, createStyles } from '@material-ui/core/styles';
 import CloseSharpIcon from '@material-ui/icons/CloseSharp';
+import styled from 'styled-components';
 
 enum dataViewType {
   commits = 'Commits',
@@ -16,29 +18,11 @@ enum dataViewType {
 }
 type dataView = dataViewType.commits | keyof dataViewType.issues;
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    filterBar: {
-      margin: '1rem',
-      [theme.breakpoints.up('xs')]: {
-        width: '100vw'
-      },
-      [theme.breakpoints.up('md')]: {
-        width: '30vw'
-      },
-      [theme.breakpoints.up('lg')]: {
-        width: '20vw'
-      }
-    }
-  })
-);
 type props = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const SideBar = ({ open, setOpen }: props) => {
-  const classes = useStyles();
-
   // Which data type is going to be viewd. All types defined in dataViewType
   const [view, setView] = useState<dataView | ''>('');
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -68,15 +52,12 @@ const SideBar = ({ open, setOpen }: props) => {
           onOpen={toggleDrawer(true)}
           onClose={toggleDrawer(false)}
         >
-          <Grid container justifyContent="flex-end" style={{ padding: '1rem' }}>
-            <Grid item xs={1}>
-              <CloseSharpIcon onClick={toggleDrawer(false)} />
-            </Grid>
-          </Grid>
-          <FormControl color="primary" className={classes.filterBar}>
+          <GridWithMediaQueries container justifyContent="flex-end">
+            <CloseSharpIcon onClick={toggleDrawer(false)} />
+          </GridWithMediaQueries>
+          <FormControl color="primary" style={{ margin: '1rem' }}>
             <InputLabel>Type</InputLabel>
             <Select
-              style={{ width: '90%' }}
               color="primary"
               value={view}
               role="presentation"
@@ -100,5 +81,18 @@ const SideBar = ({ open, setOpen }: props) => {
     </>
   );
 };
+
+const GridWithMediaQueries = withTheme(styled(Grid)`
+  padding: 1rem;
+  ${(props) => props.theme.breakpoints.up('xs')} {
+    width: 100vw;
+  }
+  ${(props) => props.theme.breakpoints.up('md')} {
+    width: 30vw;
+  }
+  ${(props) => props.theme.breakpoints.up('lg')} {
+    width: 20vw;
+  }
+`);
 
 export default SideBar;
