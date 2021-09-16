@@ -1,4 +1,4 @@
-import { Toolbar } from '@material-ui/core';
+import { Toolbar, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import React from 'react';
 import { setMenuOpen } from '../state/reducer.actions';
@@ -9,12 +9,13 @@ const Header = () => {
 
   return (
     <Toolbar>
-      <MenuIcon
+      <IconButton
         onClick={() => {
           dispatch(setMenuOpen(true));
-          console.log(state.menuOpen);
         }}
-      />
+      >
+        <MenuIcon />
+      </IconButton>
     </Toolbar>
   );
 };

@@ -1,4 +1,9 @@
-import { Grid, SwipeableDrawer, withTheme } from '@material-ui/core';
+import {
+  Grid,
+  IconButton,
+  SwipeableDrawer,
+  withTheme
+} from '@material-ui/core';
 import React from 'react';
 import CloseSharpIcon from '@material-ui/icons/CloseSharp';
 import styled from 'styled-components';
@@ -10,19 +15,20 @@ const SideBar = () => {
   const { state, dispatch } = useGlobalState();
 
   // Toogle sidebar on eventchange and function-call
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+  const toggleDrawer = (open: boolean) => (
+    event: React.KeyboardEvent | React.MouseEvent
+  ) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
 
-      dispatch(setMenuOpen(open));
-    };
+    dispatch(setMenuOpen(open));
+  };
 
   return (
     <SwipeableDrawer
@@ -32,7 +38,9 @@ const SideBar = () => {
       onClose={toggleDrawer(false)}
     >
       <GridWithMediaQueries container justifyContent="flex-end">
-        <CloseSharpIcon onClick={toggleDrawer(false)} />
+        <IconButton onClick={toggleDrawer(false)}>
+          <CloseSharpIcon />
+        </IconButton>
       </GridWithMediaQueries>
       <Filter />
     </SwipeableDrawer>
@@ -45,10 +53,11 @@ const GridWithMediaQueries = withTheme(styled(Grid)`
     width: 100vw;
   }
   ${(props) => props.theme.breakpoints.up('md')} {
-    width: 30vw;
+    width: auto;
+    min-width: 30vw;
   }
   ${(props) => props.theme.breakpoints.up('lg')} {
-    width: 20vw;
+    min-width: 20vw;
   }
 `);
 
