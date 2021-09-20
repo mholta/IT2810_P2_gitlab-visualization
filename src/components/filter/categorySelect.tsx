@@ -4,7 +4,6 @@ import { FilterContext } from '../../context/filter.context';
 import { DataCategory } from '../../context/filter.initialValue';
 
 const CategorySelect = () => {
-  // Which data type is going to be viewd. All types defined in dataViewType
   const {
     state: { category },
     setCategory
