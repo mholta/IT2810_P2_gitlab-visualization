@@ -27,17 +27,22 @@ const MainPage = () => {
         let currentUserNum: number = userNum;
         commits
           .map((d: any) => d.author_name)
-          .filter((v: any, i: number, a: any) => a && a.indexOf(v) === i) // https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
+          .filter((v: any, i: number, a: any) => a && a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
           .forEach((name: any) => {
             if (name && !(name in users)) {
-              newUsers[name] = 'User ' + currentUserNum;
+              newUsers[name] = {
+                name: 'User ' + currentUserNum,
+                show: true
+              };
               currentUserNum++;
             }
           });
 
-        setUsers({ ...users, ...newUsers });
-        setUserNum(currentUserNum);
+        const allUsers = { ...users, ...newUsers };
+        commits = commits.filter((c: any) => allUsers[c.author_name]?.show);
 
+        setUsers(allUsers);
+        setUserNum(currentUserNum);
         setData({ loading: false, data: commits });
       });
     } else if (filter.type === GitLabTypes.Issues) {
@@ -46,17 +51,22 @@ const MainPage = () => {
         let currentUserNum: number = userNum;
         issues
           .map((i: any) => i.assignee?.name)
-          .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
+          .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
           .forEach((name: string) => {
             if (name && !(name in users)) {
-              newUsers[name] = 'User ' + currentUserNum;
+              newUsers[name] = {
+                name: 'User ' + currentUserNum,
+                show: true
+              };
               currentUserNum++;
             }
           });
 
-        setUsers({ ...users, ...newUsers });
-        setUserNum(currentUserNum);
+        const allUsers = { ...users, ...newUsers };
+        issues = issues.filter((i: any) => allUsers[i.assignee?.name]?.show);
 
+        setUsers(allUsers);
+        setUserNum(currentUserNum);
         setData({ loading: false, data: issues });
       });
     }
