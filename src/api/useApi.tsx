@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { CommitData } from '../components/commits/commits';
 import { FilterContext } from '../context/filter.context';
 import { DataCategory } from '../context/filter.initialValue';
 import { fetchCommits, fetchIssues } from './api';
 
 const UseAPI = () => {
-  const [users, setUsers] = useState<any>({});
+  const [users, setUsers] = useState<User[]>([]);
   const [userNum, setUserNum] = useState<number>(1);
   const [data, setData] = useState<any>(null);
   const [loadingState, setLoadingState] = useState<LoadingState>(
@@ -22,25 +23,24 @@ const UseAPI = () => {
           filterState.timeSpan.since,
           filterState.timeSpan.until
         ).then((commits) => {
-          const newUsers: any = {};
           let currentUserNum: number = userNum;
+
           commits
-            .map((d: any) => d.author_name)
+            .map((d: CommitData) => d.author_email)
             .filter((v: any, i: number, a: any) => a && a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-            .forEach((name: any) => {
-              if (name && !(name in users)) {
-                newUsers[name] = {
-                  name: 'User ' + currentUserNum,
+            .forEach((email: any) => {
+              if (users.map((u) => u.id).indexOf(email) === -1) {
+                const newUser: User = {
+                  alias: 'User ' + currentUserNum,
+                  id: email,
                   show: true
                 };
+                users.push(newUser);
+
                 currentUserNum++;
               }
             });
 
-          const allUsers = { ...users, ...newUsers };
-          commits = commits.filter((c: any) => allUsers[c.author_name]?.show);
-
-          setUsers(allUsers);
           setUserNum(currentUserNum);
 
           setData(commits);
@@ -53,25 +53,24 @@ const UseAPI = () => {
           filterState.timeSpan.since,
           filterState.timeSpan.until
         ).then((issues) => {
-          const newUsers: any = {};
           let currentUserNum: number = userNum;
+
           issues
             .map((i: any) => i.assignee?.name)
             .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-            .forEach((name: string) => {
-              if (name && !(name in users)) {
-                newUsers[name] = {
-                  name: 'User ' + currentUserNum,
+            .forEach((email: string) => {
+              if (users.map((u) => u.id).indexOf(email) === -1) {
+                const newUser: User = {
+                  alias: 'User ' + currentUserNum,
+                  id: email,
                   show: true
                 };
+                users.push(newUser);
+
                 currentUserNum++;
               }
             });
 
-          const allUsers = { ...users, ...newUsers };
-          issues = issues.filter((i: any) => allUsers[i.assignee?.name]?.show);
-
-          setUsers(allUsers);
           setUserNum(currentUserNum);
 
           setData(issues);
@@ -82,15 +81,21 @@ const UseAPI = () => {
       default:
         break;
     }
-  }, [filterState]);
+  }, []);
 
-  return { data, loadingState };
+  return { data, users, loadingState };
 };
 
 export enum LoadingState {
   LOADING = 'loading',
   ERROR = 'error',
   LOADED = 'loaded'
+}
+
+export interface User {
+  alias: string;
+  id: string;
+  show: boolean;
 }
 
 export default UseAPI;

@@ -3,6 +3,8 @@ import TopBar from './topBar';
 import styled from 'styled-components';
 import { useContext } from 'react';
 import { FilterContext } from '../context/filter.context';
+import UseAPI, { LoadingState } from '../api/useApi';
+import Commits from './commits/commits';
 
 const MainContentContainer = () => {
   const {
@@ -12,13 +14,24 @@ const MainContentContainer = () => {
     }
   } = useContext(FilterContext);
 
+  const { data, users, loadingState } = UseAPI();
+  console.log(users);
+
   return (
     <Container>
-      {since?.toLocaleDateString()}
-      {until?.toLocaleDateString()}
       <FilterContext.Consumer>
         {(value) => <div>{JSON.stringify(value)}</div>}
       </FilterContext.Consumer>
+
+      {/* START */}
+      <div>
+        {loadingState === LoadingState.LOADING && <div>loading</div>}
+        {loadingState === LoadingState.LOADED && (
+          <Commits commits={data} users={users} />
+        )}
+      </div>
+      {/* END */}
+
       <TopBar />
       <Container>
         Info her
