@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { FilterContext } from '../context/filter.context';
 import UseAPI, { LoadingState } from '../api/useApi';
 import Commits from './commits/commits';
+import Graph, { ChartData } from './displayData/graph';
 
 const MainContentContainer = () => {
   const {
@@ -16,7 +17,21 @@ const MainContentContainer = () => {
 
   const { data, users, loadingState } = UseAPI();
   console.log(users);
-
+  const chartData: ChartData = {
+    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [
+      {
+        values: [18, 40, 30, 35, 8, 52, 17, 4, 4],
+        name: 'Some Data',
+        chartType: 'bar'
+      },
+      {
+        values: [30, 20, 10, 15, 14, 54, 3, 5, 6],
+        name: 'Another Set',
+        chartType: 'bar'
+      }
+    ]
+  };
   return (
     <Container>
       <FilterContext.Consumer>
@@ -40,7 +55,7 @@ const MainContentContainer = () => {
           <br />
           To: {until?.toLocaleDateString()}
         </Card>
-        <Card>Category: {category}</Card>
+        <Graph data={chartData} />
       </Container>
     </Container>
   );
