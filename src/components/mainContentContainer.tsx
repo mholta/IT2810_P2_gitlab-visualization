@@ -3,10 +3,25 @@ import TopBar from './topBar';
 
 import { useGlobalState } from '../state/useGlobalState';
 import styled from 'styled-components';
+import Graph, { ChartData } from './displayData/graph';
 
 const MainContentContainer = () => {
   const { state } = useGlobalState();
-
+  const data: ChartData = {
+    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [
+      {
+        values: [18, 40, 30, 35, 8, 52, 17, 4, 4],
+        name: 'Some Data',
+        chartType: 'bar'
+      },
+      {
+        values: [30, 20, 10, 15, 14, 54, 3, 5, 6],
+        name: 'Another Set',
+        chartType: 'bar'
+      }
+    ]
+  };
   return (
     <Container>
       <TopBar />
@@ -19,6 +34,7 @@ const MainContentContainer = () => {
         </Card>
         <Card>Menu open: {state.menuOpen ? 'ja' : 'nei'}</Card>
         <Card>Category: {state.filter.category}</Card>
+        <Graph data={data} />
       </Container>
     </Container>
   );
