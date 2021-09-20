@@ -4,31 +4,29 @@ import {
   SwipeableDrawer,
   withTheme
 } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
 import CloseSharpIcon from '@material-ui/icons/CloseSharp';
 import styled from 'styled-components';
 import Filter from './filter/filter';
-import { setMenuOpen } from '../state/reducer.actions';
-import { useGlobalState } from '../state/useGlobalState';
+import { LayoutContext } from '../context/layout.context';
 
 const SideBar = () => {
-  const { state, dispatch } = useGlobalState();
+  const { state, setMenuOpen } = useContext(LayoutContext);
 
   // Toogle sidebar on eventchange and function-call
-  const toggleDrawer = (open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent
-  ) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
 
-    dispatch(setMenuOpen(open));
-  };
+      setMenuOpen(open);
+    };
 
   return (
     <SwipeableDrawer

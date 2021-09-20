@@ -37,7 +37,6 @@ const DatePicker = ({
           'aria-label': 'change date'
         }}
         disableFuture
-        showTodayButton
       />
       {enableClearButton && (
         <ClearButtonWrapper>

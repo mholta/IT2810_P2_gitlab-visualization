@@ -1,19 +1,14 @@
+import React, { useContext } from 'react';
 import { Toolbar, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import React from 'react';
-import { setMenuOpen } from '../state/reducer.actions';
-import { useGlobalState } from '../state/useGlobalState';
+import { LayoutContext } from '../context/layout.context';
 
 const Header = () => {
-  const { dispatch, state } = useGlobalState();
+  const { setMenuOpen } = useContext(LayoutContext);
 
   return (
     <Toolbar>
-      <IconButton
-        onClick={() => {
-          dispatch(setMenuOpen(true));
-        }}
-      >
+      <IconButton onClick={() => setMenuOpen(true)}>
         <MenuIcon />
       </IconButton>
     </Toolbar>

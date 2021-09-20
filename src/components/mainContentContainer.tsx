@@ -1,40 +1,33 @@
 import { Container } from '@material-ui/core';
 import TopBar from './topBar';
-
-import { useGlobalState } from '../state/useGlobalState';
 import styled from 'styled-components';
-import Graph, { ChartData } from './displayData/graph';
+import { useContext } from 'react';
+import { FilterContext } from '../context/filter.context';
 
 const MainContentContainer = () => {
-  const { state } = useGlobalState();
-  const data: ChartData = {
-    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    datasets: [
-      {
-        values: [18, 40, 30, 35, 8, 52, 17, 4, 4],
-        name: 'Some Data',
-        chartType: 'bar'
-      },
-      {
-        values: [30, 20, 10, 15, 14, 54, 3, 5, 6],
-        name: 'Another Set',
-        chartType: 'bar'
-      }
-    ]
-  };
+  const {
+    state: {
+      timeSpan: { since, until },
+      category
+    }
+  } = useContext(FilterContext);
+
   return (
     <Container>
+      {since?.toLocaleDateString()}
+      {until?.toLocaleDateString()}
+      <FilterContext.Consumer>
+        {(value) => <div>{JSON.stringify(value)}</div>}
+      </FilterContext.Consumer>
       <TopBar />
       <Container>
         Info her
         <Card>
-          From: {state.filter.timeSpan.from?.toLocaleDateString()}
+          From: {since?.toLocaleDateString()}
           <br />
-          To: {state.filter.timeSpan.to?.toLocaleDateString()}
+          To: {until?.toLocaleDateString()}
         </Card>
-        <Card>Menu open: {state.menuOpen ? 'ja' : 'nei'}</Card>
-        <Card>Category: {state.filter.category}</Card>
-        <Graph data={data} />
+        <Card>Category: {category}</Card>
       </Container>
     </Container>
   );

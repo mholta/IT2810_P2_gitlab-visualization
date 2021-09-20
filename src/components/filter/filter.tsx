@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import TimeSpan from './timeSpan';
-import TypeSelect from './typeSelect';
+import CategorySelect from './categorySelect';
 
 const Filter = () => {
   return (
     <FilterWrapper>
-      <TypeSelect />
+      <CategorySelect />
       <TimeSpan />
     </FilterWrapper>
   );

@@ -1,50 +1,51 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import styled from 'styled-components';
 import { getDateMinusDays } from '../../utils/date';
-import { setTimespanFrom, setTimespanTo } from '../../state/reducer.actions';
-import { useGlobalState } from '../../state/useGlobalState';
 import DatePicker from '../../components/filter/datePicker';
+import { FilterContext } from '../../context/filter.context';
 
 const TimeSpan = () => {
-  const { state, dispatch } = useGlobalState();
+  const {
+    state: {
+      timeSpan: { since, until }
+    },
+    setSinceDate,
+    setUntilDate
+  } = useContext(FilterContext);
 
   const setFromDate = (date: Date | null) => {
-    if (date && state.filter.timeSpan.to && date > state.filter.timeSpan.to) {
-      dispatch(setTimespanTo(getDateMinusDays(new Date(date), -1)));
-    }
+    if (!date) return;
 
-    dispatch(setTimespanFrom(date));
+    setSinceDate(date);
+
+    if (date > until) setUntilDate(getDateMinusDays(new Date(date), -1));
   };
 
   const setToDate = (date: Date | null) => {
-    if (
-      date &&
-      state.filter.timeSpan.from &&
-      date < state.filter.timeSpan.from
-    ) {
-      dispatch(setTimespanFrom(getDateMinusDays(new Date(date), 1)));
-    }
+    if (!date) return;
 
-    dispatch(setTimespanTo(date));
+    setUntilDate(date);
+
+    if (date < since) setSinceDate(getDateMinusDays(new Date(date), 1));
   };
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      {/* {state.filter.timeSpan.from?.toLocaleDateString()} */}
+      {since.toLocaleDateString()}
       <TimeSpanWrapper>
         <DatePicker
           id="date-picker-from"
           label="Fra"
-          value={state.filter.timeSpan.from}
+          value={since}
           onChange={setFromDate}
           enableClearButton
         />
         <DatePicker
           id="date-picker-to"
           label="Til"
-          value={state.filter.timeSpan.to}
+          value={until}
           onChange={setToDate}
         />
       </TimeSpanWrapper>
