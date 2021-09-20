@@ -1,15 +1,17 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import React from 'react';
-import { setDataCategory } from '../../state/reducer.actions';
-import { DataViewType } from '../../state/types';
-import { useGlobalState } from '../../state/useGlobalState';
+import React, { useContext } from 'react';
+import { FilterContext } from '../../context/filter.context';
+import { DataCategory } from '../../context/filter.initialValue';
 
-const TypeSelect = () => {
+const CategorySelect = () => {
   // Which data type is going to be viewd. All types defined in dataViewType
-  const { state, dispatch } = useGlobalState();
+  const {
+    state: { category },
+    setCategory
+  } = useContext(FilterContext);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(setDataCategory(event.target.value as DataViewType));
+    setCategory(event.target.value as DataCategory);
   };
 
   return (
@@ -17,12 +19,12 @@ const TypeSelect = () => {
       <InputLabel>Type</InputLabel>
       <Select
         color="primary"
-        value={state.filter.category}
+        value={category}
         role="presentation"
         onChange={handleChange}
       >
         {/* Different types of data to be collected */}
-        {Object.values(DataViewType).map((text) => (
+        {Object.values(DataCategory).map((text) => (
           <MenuItem
             color="primary"
             style={{ margin: 0 }}
@@ -37,4 +39,4 @@ const TypeSelect = () => {
   );
 };
 
-export default TypeSelect;
+export default CategorySelect;

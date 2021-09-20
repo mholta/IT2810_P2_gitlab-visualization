@@ -1,24 +1,33 @@
 import { Container } from '@material-ui/core';
 import TopBar from './topBar';
-
-import { useGlobalState } from '../state/useGlobalState';
 import styled from 'styled-components';
+import { useContext } from 'react';
+import { FilterContext } from '../context/filter.context';
 
 const MainContentContainer = () => {
-  const { state } = useGlobalState();
+  const {
+    state: {
+      timeSpan: { since, until },
+      category
+    }
+  } = useContext(FilterContext);
 
   return (
     <Container>
+      {since?.toLocaleDateString()}
+      {until?.toLocaleDateString()}
+      <FilterContext.Consumer>
+        {(value) => <div>{JSON.stringify(value)}</div>}
+      </FilterContext.Consumer>
       <TopBar />
       <Container>
         Info her
         <Card>
-          From: {state.filter.timeSpan.from?.toLocaleDateString()}
+          From: {since?.toLocaleDateString()}
           <br />
-          To: {state.filter.timeSpan.to?.toLocaleDateString()}
+          To: {until?.toLocaleDateString()}
         </Card>
-        <Card>Menu open: {state.menuOpen ? 'ja' : 'nei'}</Card>
-        <Card>Category: {state.filter.category}</Card>
+        <Card>Category: {category}</Card>
       </Container>
     </Container>
   );

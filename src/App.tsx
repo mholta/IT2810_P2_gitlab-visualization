@@ -3,15 +3,18 @@ import './App.css';
 import theme from './styles/theme';
 import MainPage from './pages/mainPage';
 import { ThemeProvider, StylesProvider } from '@material-ui/core';
-import GlobalStateProvider from './state/GlobalStateProvider';
+import { FilterContextProvider } from './context/filter.provider';
+import { LayoutContextProvider } from './context/layout.provider';
 
 function App() {
   return (
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <GlobalStateProvider>
-          <MainPage />
-        </GlobalStateProvider>
+        <LayoutContextProvider>
+          <FilterContextProvider>
+            <MainPage />
+          </FilterContextProvider>
+        </LayoutContextProvider>
       </ThemeProvider>
     </StylesProvider>
   );

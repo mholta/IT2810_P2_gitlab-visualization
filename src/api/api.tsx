@@ -9,11 +9,6 @@ const header = {
   })
 };
 
-export enum GitLabTypes {
-  Commits = 'COMMITS',
-  Issues = 'ISSUES'
-}
-
 export const fetchCommits = (since: Date, until: Date) => {
   return new Promise<any>((resolve) => {
     fetch(
