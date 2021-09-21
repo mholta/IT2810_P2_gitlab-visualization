@@ -9,7 +9,7 @@ type ChartType =
   | 'heatmap';
 export interface ChartData {
   labels?: Array<string>;
-  datasets?: Array<{
+  datasets: Array<{
     name?: string;
     chartType?: ChartType;
     values: Array<number>;
@@ -25,12 +25,17 @@ interface GraphProps {
 }
 
 const Graph = ({ data }: GraphProps) => {
+  const number = data.datasets.length;
+  const colors = [];
+  for (let i = 0; i < number; i++) {
+    colors.push('#' + Math.random().toString(16).substr(-6));
+  }
   return (
     <ReactFrappeChart
       axisOptions={{ xAxisMode: 'tick', yAxisMode: 'tick', xIsSeries: 1 }}
       //   height={250}
       //   type="bar"
-      colors={['#000', '#eee']}
+      colors={colors}
       data={data}
     />
   );
