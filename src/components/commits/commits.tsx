@@ -52,7 +52,7 @@ const Commits = ({ commits, users }: CommitsProps) => {
             <CommitCardWrapper
               columns={columns}
               showColumns={showColumns}
-              currentColumn={getColumnNum(commitData.committer_email)}
+              currentColumn={getColumnNum(commitData.committer_name)}
               key={'commit-wrapper-' + index}
             >
               <CommitCard commitData={commitData} key={'commit-' + index} />

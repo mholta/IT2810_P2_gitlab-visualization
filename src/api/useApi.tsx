@@ -7,16 +7,14 @@ import { fetchCommits, fetchIssues } from './api';
 const UseAPI = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [userNum, setUserNum] = useState<number>(1);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any>([]);
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.LOADING
   );
 
   const { state: filterState } = useContext(FilterContext);
-
   useEffect(() => {
     setLoadingState(LoadingState.LOADING);
-
     switch (filterState.category) {
       case DataCategory.COMMITS: {
         fetchCommits(
@@ -26,13 +24,13 @@ const UseAPI = () => {
           let currentUserNum: number = userNum;
 
           commits
-            .map((d: CommitData) => d.author_email)
+            .map((d: CommitData) => d.author_name)
             .filter((v: any, i: number, a: any) => a && a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-            .forEach((email: any) => {
-              if (users.map((u) => u.id).indexOf(email) === -1) {
+            .forEach((name: any) => {
+              if (users.map((u) => u.id).indexOf(name) === -1) {
                 const newUser: User = {
                   alias: 'User ' + currentUserNum,
-                  id: email,
+                  id: name,
                   show: true
                 };
                 users.push(newUser);
@@ -81,7 +79,7 @@ const UseAPI = () => {
       default:
         break;
     }
-  }, []);
+  }, [filterState]); // must be changed later on
 
   return { data, users, loadingState };
 };
