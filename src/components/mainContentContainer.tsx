@@ -1,11 +1,17 @@
 import { Container } from '@material-ui/core';
 import TopBar from './topBar';
 import styled from 'styled-components';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../context/filter.context';
 import UseAPI, { LoadingState } from '../api/useApi';
 import Commits from './commits/commits';
 import Graph, { ChartData } from './displayData/graph';
+import { DataCategory } from '../context/filter.initialValue';
+import {
+  produceBarChartDataFromCommits,
+  produceBarChartDataFromIssues,
+  produceCumulativeChartDataFromCommits
+} from '../utils/dataToGraph';
 
 const MainContentContainer = () => {
   const {
@@ -14,24 +20,20 @@ const MainContentContainer = () => {
       category
     }
   } = useContext(FilterContext);
+  const [chartData, setChartData] = useState<ChartData>({
+    labels: [],
+    datasets: []
+  });
 
   const { data, users, loadingState } = UseAPI();
-  console.log(users);
-  const chartData: ChartData = {
-    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    datasets: [
-      {
-        values: [18, 40, 30, 35, 8, 52, 17, 4, 4],
-        name: 'Some Data',
-        chartType: 'bar'
-      },
-      {
-        values: [30, 20, 10, 15, 14, 54, 3, 5, 6],
-        name: 'Another Set',
-        chartType: 'bar'
-      }
-    ]
-  };
+  useEffect(() => {
+    if (category === DataCategory.COMMITS) {
+      setChartData(produceCumulativeChartDataFromCommits(data, since, until));
+    } else if (category === DataCategory.ISSUES) {
+      setChartData(produceBarChartDataFromIssues(data, since, until));
+    }
+  }, [data, users, loadingState]);
+
   return (
     <Container>
       <FilterContext.Consumer>
@@ -42,7 +44,10 @@ const MainContentContainer = () => {
       <div>
         {loadingState === LoadingState.LOADING && <div>loading</div>}
         {loadingState === LoadingState.LOADED && (
-          <Commits commits={data} users={users} />
+          <div>
+            <Commits commits={data} users={users} />
+            <Graph data={chartData} />
+          </div>
         )}
       </div>
       {/* END */}
@@ -55,7 +60,6 @@ const MainContentContainer = () => {
           <br />
           To: {until?.toLocaleDateString()}
         </Card>
-        <Graph data={chartData} />
       </Container>
     </Container>
   );
