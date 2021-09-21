@@ -56,11 +56,11 @@ const UseAPI = () => {
           issues
             .map((i: any) => i.assignee?.name)
             .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-            .forEach((email: string) => {
-              if (users.map((u) => u.id).indexOf(email) === -1) {
+            .forEach((name: string) => {
+              if (users.map((u) => u.id).indexOf(name) === -1) {
                 const newUser: User = {
                   alias: 'User ' + currentUserNum,
-                  id: email,
+                  id: name,
                   show: true
                 };
                 users.push(newUser);
