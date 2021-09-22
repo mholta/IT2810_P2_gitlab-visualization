@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, withTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import CommitCard from './commitCard';
@@ -17,6 +17,11 @@ const Commits = ({ commits, users }: CommitsProps) => {
 
   const getColumnNum = (user: string) =>
     users.map((user) => user.id).indexOf(user) + 1;
+
+  const getUser = (user: string) =>
+    users.map((user) => user.id).indexOf(user) !== -1
+      ? users[users.map((user) => user.id).indexOf(user)]
+      : null;
 
   return (
     <OuterScrollWrapper>
@@ -52,10 +57,15 @@ const Commits = ({ commits, users }: CommitsProps) => {
             <CommitCardWrapper
               columns={columns}
               showColumns={showColumns}
-              currentColumn={getColumnNum(commitData.committer_name)}
+              currentColumn={getColumnNum(commitData.author_name)}
               key={'commit-wrapper-' + index}
             >
-              <CommitCard commitData={commitData} key={'commit-' + index} />
+              <CommitCard
+                commitData={commitData}
+                key={'commit-' + index}
+                openOnClick={!showColumns}
+                user={getUser(commitData.author_name)}
+              />
             </CommitCardWrapper>
           ))}
         </CommitListWrapper>
