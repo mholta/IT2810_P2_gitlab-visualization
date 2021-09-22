@@ -46,21 +46,13 @@ const MainContentContainer = () => {
         {loadingState === LoadingState.LOADED && (
           <div>
             <Commits commits={data} users={users} />
-            <Graph data={chartData} />
+            {/* <Graph data={chartData} /> */}
           </div>
         )}
       </div>
       {/* END */}
 
       <TopBar />
-      <Container>
-        Info her
-        <Card>
-          From: {since?.toLocaleDateString()}
-          <br />
-          To: {until?.toLocaleDateString()}
-        </Card>
-      </Container>
     </Container>
   );
 };

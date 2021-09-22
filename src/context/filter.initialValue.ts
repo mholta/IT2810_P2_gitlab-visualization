@@ -1,8 +1,8 @@
 import { getDateBeforeToday } from '../utils/date';
 
 export enum DataCategory {
-  COMMITS = 'Commits',
-  ISSUES = 'Issues'
+  COMMITS = 'COMMITS',
+  ISSUES = 'ISSUES'
 }
 
 export interface TimeSpanObject {
