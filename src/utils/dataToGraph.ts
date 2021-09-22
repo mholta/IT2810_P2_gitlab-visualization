@@ -104,6 +104,7 @@ const produceChartDataFromIssues = (data: IssueData[], since: Date, until: Date)
     let earliestDay = getDaysBetween(since, until);
     let numberOfDays = earliestDay + 1;
     const userNames: string[] = [];
+    console.log(data)
     if (data.length > 0) {
         data.forEach((issue) => {
           if (issue.closed_at) {
