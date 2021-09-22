@@ -3,7 +3,8 @@ import {
   FilterObject,
   initialFilterObject,
   UsersState,
-  DataCategory
+  DataCategory,
+  ListOrGraph
 } from './filter.initialValue';
 
 export const FilterContext = createContext<FilterContextState>({
@@ -11,7 +12,8 @@ export const FilterContext = createContext<FilterContextState>({
   setSinceDate: () => {},
   setUntilDate: () => {},
   setUsersState: () => {},
-  setCategory: () => {}
+  setCategory: () => {},
+  setListOrGraph: () => {}
 });
 
 export interface FilterContextState {
@@ -20,4 +22,5 @@ export interface FilterContextState {
   setUntilDate: (date: Date) => void;
   setUsersState: (userList: UsersState) => void;
   setCategory: (category: DataCategory) => void;
+  setListOrGraph: (listOrGraph: ListOrGraph) => void
 }

@@ -23,7 +23,8 @@ export const fetchCommits = (since: Date, until: Date) => {
         'repository/commits?' +
         new URLSearchParams({
           since: since.toISOString(),
-          until: until.toISOString()
+          until: until.toISOString(),
+          per_page: '100' // should maybe check if all commits are retrieved, and retrive more if not all are retrieved
         }),
       header
     )
@@ -40,7 +41,8 @@ export const fetchIssues = (since: Date, until: Date) => {
         'issues?' +
         new URLSearchParams({
           since: since.toISOString(),
-          until: until.toISOString()
+          until: until.toISOString(),
+          per_page: '100'
         }),
       header
     )

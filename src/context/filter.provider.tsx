@@ -5,7 +5,8 @@ import {
   FilterObject,
   initialFilterObject,
   TimeSpanObject,
-  UsersState
+  UsersState,
+  ListOrGraph
 } from './filter.initialValue';
 
 interface ContextProviderProps {
@@ -16,8 +17,9 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   const [state, setState] = useState<FilterObject>(initialFilterObject);
 
   const setTimeSpanFromSessionStorage = () => {
-    const sessionStorageTimeSpanState =
-      sessionStorage.getItem('time-span-state');
+    const sessionStorageTimeSpanState = sessionStorage.getItem(
+      'time-span-state'
+    );
     if (!sessionStorageTimeSpanState) return;
 
     try {
@@ -87,12 +89,15 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
 
   const setCategory = (category: DataCategory) =>
     setState({ ...state, category: category });
-
+  const setListOrGraph = (listOrGraph: ListOrGraph) => {
+    setState({ ...state, listOrGraph: listOrGraph });
+  };
   const actions = {
     setSinceDate,
     setUntilDate,
     setUsersState,
-    setCategory
+    setCategory,
+    setListOrGraph
   };
 
   return (

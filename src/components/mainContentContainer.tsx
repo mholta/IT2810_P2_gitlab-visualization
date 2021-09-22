@@ -6,7 +6,7 @@ import { FilterContext } from '../context/filter.context';
 import UseAPI, { LoadingState } from '../api/useApi';
 import Commits from './commits/commits';
 import Graph, { ChartData } from './displayData/graph';
-import { DataCategory } from '../context/filter.initialValue';
+import { DataCategory, ListOrGraph } from '../context/filter.initialValue';
 import {
   produceBarChartDataFromCommits,
   produceBarChartDataFromIssues,
@@ -17,36 +17,45 @@ const MainContentContainer = () => {
   const {
     state: {
       timeSpan: { since, until },
-      category
+      category,
+      listOrGraph
     }
   } = useContext(FilterContext);
   const [chartData, setChartData] = useState<ChartData>({
+    chartType: 'bar',
     labels: [],
     datasets: []
   });
 
   const { data, users, loadingState } = UseAPI();
   useEffect(() => {
-    if (category === DataCategory.COMMITS) {
-      setChartData(produceCumulativeChartDataFromCommits(data, since, until));
-    } else if (category === DataCategory.ISSUES) {
-      setChartData(produceBarChartDataFromIssues(data, since, until));
+    if (listOrGraph === ListOrGraph.GRAPH) {
+      if (category === DataCategory.COMMITS) {
+        setChartData(
+          produceCumulativeChartDataFromCommits(data, since, until, users)
+        );
+      } else if (category === DataCategory.ISSUES) {
+        setChartData(produceBarChartDataFromIssues(data, since, until, users));
+      }
     }
-  }, [data, users, loadingState]);
+  }, [data, users, loadingState, listOrGraph]);
 
   return (
     <Container>
-      <FilterContext.Consumer>
-        {(value) => <div>{JSON.stringify(value)}</div>}
-      </FilterContext.Consumer>
-
       {/* START */}
       <div>
         {loadingState === LoadingState.LOADING && <div>loading</div>}
         {loadingState === LoadingState.LOADED && (
           <div>
-            <Commits commits={data} users={users} />
-            {/* <Graph data={chartData} /> */}
+            {listOrGraph === ListOrGraph.LIST ? (
+              <div id="listOfCommits">
+                <Commits commits={data} users={users} />
+              </div>
+            ) : (
+              <div id="graph">
+                <Graph data={chartData} />
+              </div>
+            )}
           </div>
         )}
       </div>

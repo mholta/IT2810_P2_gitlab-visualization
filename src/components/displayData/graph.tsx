@@ -1,5 +1,7 @@
 import React from 'react';
-import ReactFrappeChart from 'react-frappe-charts';
+// import ReactFrappeChart from 'react-frappe-charts';
+import { Line, Bar } from 'react-chartjs-2';
+// import { Chart } from 'frappe-charts/dist/frappe-charts.min.esm';
 type ChartType =
   | 'line'
   | 'bar'
@@ -9,10 +11,12 @@ type ChartType =
   | 'heatmap';
 export interface ChartData {
   labels?: Array<string>;
+  chartType: ChartType;
   datasets: Array<{
-    name?: string;
-    chartType?: ChartType;
-    values: Array<number>;
+    label?: string;
+    data: Array<number>;
+    backgroundColor?: string;
+    borderColor?: string;
   }>;
   dataPoints?: {
     [x: string]: number;
@@ -31,13 +35,16 @@ const Graph = ({ data }: GraphProps) => {
     colors.push('#' + Math.random().toString(16).substr(-6));
   }
   return (
-    <ReactFrappeChart
-      axisOptions={{ xAxisMode: 'tick', yAxisMode: 'tick', xIsSeries: 1 }}
-      //   height={250}
-      //   type="bar"
-      colors={colors}
-      data={data}
-    />
+    <div>
+      {data.chartType === 'line' ? <Line data={data} /> : <Bar data={data} />}
+    </div>
+    // <ReactFrappeChart
+    //   axisOptions={{ xAxisMode: 'tick', yAxisMode: 'tick', xIsSeries: 1 }}
+    //   //   height={250}
+    //   //   type="bar"
+    //   colors={colors}
+    //   data={data}
+    // />
   );
 };
 

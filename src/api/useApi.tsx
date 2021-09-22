@@ -31,7 +31,8 @@ const UseAPI = () => {
                 const newUser: User = {
                   alias: 'User ' + currentUserNum,
                   id: name,
-                  show: true
+                  show: true,
+                  color: '#' + Math.random().toString(16).substr(-6)
                 };
                 users.push(newUser);
 
@@ -57,11 +58,15 @@ const UseAPI = () => {
             .map((i: any) => i.assignee?.name)
             .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
             .forEach((name: string) => {
-              if (users.map((u) => u.id).indexOf(name) === -1) {
+              if (
+                users.map((u) => u.id).indexOf(name) === -1 &&
+                name !== undefined
+              ) {
                 const newUser: User = {
                   alias: 'User ' + currentUserNum,
                   id: name,
-                  show: true
+                  show: true,
+                  color: '#' + Math.random().toString(16).substr(-6)
                 };
                 users.push(newUser);
 
@@ -94,6 +99,7 @@ export interface User {
   alias: string;
   id: string;
   show: boolean;
+  color: string;
 }
 
 export default UseAPI;

@@ -185,7 +185,7 @@ export interface CommitData {
   message: string; //"add prettier config #2\n",
   author_name: string; //"Magnus Holta",
   author_email: string; //"magnus.holta@gmail.com",
-  authored_date: string; //"2021-09-13T08:42:23.000+02:00",
+  authored_date?: string; //"2021-09-13T08:42:23.000+02:00",
   committer_name: string; //"Magnus Holta",
   committer_email: string; //"magnus.holta@gmail.com",
   committed_date: string; //"2021-09-13T10:53:17.000+02:00",
