@@ -31,11 +31,11 @@ const Login = () => {
     const token = data.get('token')?.toString();
     console.log(projectId);
     if (remember && projectId && token) {
-      localStorage.setItem('projectId', projectId);
+      localStorage.setItem('projectID', projectId);
       localStorage.setItem('token', token);
       history.replace('/');
     } else if (!remember && projectId && token) {
-      sessionStorage.setItem('projectId', projectId);
+      sessionStorage.setItem('projectID', projectId);
       sessionStorage.setItem('token', token);
       history.replace('/');
     }

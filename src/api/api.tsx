@@ -14,9 +14,9 @@ let endpoint = '';
 let endpointToken = '';
 let header: any;
 const updateEndpoint = () => {
-  const projectIdLocal = localStorage.getItem('projectId');
+  const projectIdLocal = localStorage.getItem('projectID');
   const tokenLocal = localStorage.getItem('token');
-  const projectIdSession = sessionStorage.getItem('projectId');
+  const projectIdSession = sessionStorage.getItem('projectID');
   const tokenSession = sessionStorage.getItem('token');
   if (projectIdLocal) {
     endpoint = projectIdLocal;

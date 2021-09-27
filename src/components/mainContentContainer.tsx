@@ -17,8 +17,8 @@ const MainContentContainer = () => {
   const history = useHistory();
   if (
     !(
-      (localStorage.getItem('projectId') !== null ||
-        sessionStorage.getItem('projectId') !== null) &&
+      (localStorage.getItem('projectID') !== null ||
+        sessionStorage.getItem('projectID') !== null) &&
       (localStorage.getItem('token') !== null ||
         sessionStorage.getItem('token') !== null)
     )
