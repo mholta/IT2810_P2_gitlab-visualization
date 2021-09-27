@@ -1,6 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
-import Commits, { CommitData } from '../components/commits/commits';
-import { FilterContext } from '../context/filter.context';
+import { CommitData } from '../components/commits/commits';
 import { DataCategory } from '../context/filter.initialValue';
 import { getUniqueUsers } from '../utils/list';
 import { fetchCommits, fetchIssues } from './api';
@@ -18,79 +16,66 @@ export interface User {
   color: string;
 }
 
-const UseAPI = () => {
-  const [data, setData] = useState<any>([]);
-  const [loadingState, setLoadingState] = useState<LoadingState>(
-    LoadingState.LOADING
-  );
+const UseAPI = async (
+  since: Date,
+  until: Date,
+  category: DataCategory,
+  users: User[]
+): Promise<any> => {
+  switch (category) {
+    case DataCategory.COMMITS: {
+      return await fetchCommits(since, until).then((commits) => {
+        getUniqueUsers(
+          commits.map((d: CommitData) => d.author_name),
+          users
+        );
 
-  const { state: filterState, setUsersState } = useContext(FilterContext);
-
-  useEffect(() => {
-    setLoadingState(LoadingState.LOADING);
-    switch (filterState.category) {
-      case DataCategory.COMMITS: {
-        fetchCommits(
-          filterState.timeSpan.since,
-          filterState.timeSpan.until
-        ).then((commits) => {
-          const users = filterState.users;
-
-          getUniqueUsers(
-            commits.map((d: CommitData) => d.author_name),
-            users
-          );
-
-          const userCommits = [];
-          for (const commit of commits) {
-            for (const user of users) {
-              if (user.show && commit.author_name == user.id) {
-                userCommits.push(commit);
-                break;
-              }
+        const userCommits = [];
+        for (const commit of commits) {
+          for (const user of users) {
+            if (user.show && commit.author_name === user.id) {
+              userCommits.push(commit);
+              break;
             }
           }
+        }
 
-          setUsersState(users);
-          setData(userCommits);
-          setLoadingState(LoadingState.LOADED);
-        });
-        break;
-      }
-      case DataCategory.ISSUES: {
-        fetchIssues(
-          filterState.timeSpan.since,
-          filterState.timeSpan.until
-        ).then((issues) => {
-          const users = filterState.users;
-
-          getUniqueUsers(
-            issues.map((i: any) => i.assignee?.name),
-            users
-          );
-
-          const userIssues = [];
-          for (const issue of issues) {
-            for (const user of users) {
-              if (user.show && issue.assignee?.name == user.id) {
-                userIssues.push(issue);
-                break;
-              }
-            }
-          }
-
-          setUsersState(users);
-          setData(userIssues);
-          setLoadingState(LoadingState.LOADED);
-        });
-        break;
-      }
-      default:
-        break;
+        return {
+          data: userCommits,
+          loadingState: LoadingState.LOADED,
+          updatedUsers: users
+        };
+      });
     }
-  }, [filterState]);
+    case DataCategory.ISSUES: {
+      return await fetchIssues(since, until).then((issues) => {
+        getUniqueUsers(
+          issues
+            .filter((i: any) => i.assignee)
+            .map((i: any) => i.assignee?.name),
+          users
+        );
 
-  return { data, loadingState };
+        const userIssues = [];
+        for (const issue of issues) {
+          for (const user of users) {
+            if (user.show && issue.assignee?.name === user.id) {
+              userIssues.push(issue);
+              break;
+            }
+          }
+        }
+
+        return {
+          data: userIssues,
+          loadingState: LoadingState.LOADED,
+          updatedUsers: users
+        };
+      });
+    }
+    default:
+      break;
+  }
 };
 
 export default UseAPI;

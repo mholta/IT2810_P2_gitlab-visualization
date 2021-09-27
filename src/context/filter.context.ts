@@ -1,14 +1,14 @@
 import { createContext } from 'react';
+import { User } from '../api/useApi';
 import {
   FilterObject,
-  initialFilterObject,
-  UsersState,
   DataCategory,
-  ListOrGraph
+  ListOrGraph,
+  getInitialFilterObject
 } from './filter.initialValue';
 
 export const FilterContext = createContext<FilterContextState>({
-  state: initialFilterObject,
+  state: getInitialFilterObject(),
   setSinceDate: () => {},
   setUntilDate: () => {},
   setUsersState: () => {},
@@ -20,7 +20,7 @@ export interface FilterContextState {
   state: FilterObject;
   setSinceDate: (date: Date) => void;
   setUntilDate: (date: Date) => void;
-  setUsersState: (userList: UsersState) => void;
+  setUsersState: (userList: User[]) => void;
   setCategory: (category: DataCategory) => void;
-  setListOrGraph: (listOrGraph: ListOrGraph) => void
+  setListOrGraph: (listOrGraph: ListOrGraph) => void;
 }

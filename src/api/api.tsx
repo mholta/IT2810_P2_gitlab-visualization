@@ -38,7 +38,6 @@ export const fetchCommits = (
     )
       .then((res) => {
         pageNum = res.headers.get('x-next-page');
-        console.log(pageNum);
         return res.json();
       })
       .then((commits) => {

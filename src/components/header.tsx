@@ -1,13 +1,8 @@
-import React, { useContext } from 'react';
-import { Toolbar, IconButton } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import { LayoutContext } from '../context/layout.context';
+import React from 'react';
 import HamburgerButton from './hamburgerButton';
 import styled from 'styled-components';
 
 const Header = () => {
-  const { setMenuOpen } = useContext(LayoutContext);
-
   return (
     <HeaderWrapper>
       <HamburgerButton />

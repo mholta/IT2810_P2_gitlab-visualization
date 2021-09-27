@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, withTheme } from '@material-ui/core';
+import { withTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import CommitCard from './commitCard';
 import { User } from '../../api/useApi';
@@ -12,6 +12,8 @@ interface CommitsProps {
 }
 
 const Commits = ({ commits, users }: CommitsProps) => {
+  console.log('Commits rendered');
+
   const [showColumns, setShowColumns] = useState<boolean>(true);
 
   const columns = users.length;

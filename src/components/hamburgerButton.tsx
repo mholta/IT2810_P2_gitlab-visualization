@@ -4,9 +4,7 @@ import { LayoutContext } from '../context/layout.context';
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconButtonWithLabel from './buttonWithLabel';
 
-interface HamburgerButtonProps {}
-
-const HamburgerButton = ({}: HamburgerButtonProps) => {
+const HamburgerButton = () => {
   const { setMenuOpen } = useContext(LayoutContext);
 
   return (

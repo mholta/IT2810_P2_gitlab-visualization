@@ -14,12 +14,10 @@ export interface TimeSpanObject {
   until: Date;
 }
 
-export type UsersState = User[];
-
 export interface FilterObject {
   timeSpan: TimeSpanObject;
   category: DataCategory;
-  users: UsersState;
+  users: User[];
   listOrGraph: ListOrGraph;
 }
 
@@ -31,7 +29,59 @@ const initialTimeSpan: TimeSpanObject = {
 export const initialFilterObject: FilterObject = {
   timeSpan: initialTimeSpan,
   category: DataCategory.COMMITS,
-  users: [], 
-  listOrGraph: ListOrGraph.LIST,
+  users: [],
+  listOrGraph: ListOrGraph.LIST
+};
 
+export const getInitialFilterObject = (): FilterObject => {
+  console.log('getInitialFilterObject');
+
+  const filterObject: FilterObject = initialFilterObject;
+
+  const timeSpan: TimeSpanObject | undefined = getTimeSpanFromSessionStorage();
+  if (timeSpan) filterObject.timeSpan = timeSpan;
+
+  const category: DataCategory | undefined = getCategoryFromLocalStorage();
+  if (category) filterObject.category = category;
+
+  return filterObject;
+};
+
+const getTimeSpanFromSessionStorage = (): TimeSpanObject | undefined => {
+  const sessionStorageTimeSpanState = sessionStorage.getItem('time-span-state');
+
+  if (!sessionStorageTimeSpanState) return;
+
+  try {
+    const newTimeSpanState: TimeSpanObject = JSON.parse(
+      sessionStorageTimeSpanState
+    );
+
+    const timeSpan: TimeSpanObject = {
+      since: new Date(newTimeSpanState.since),
+      until: new Date(newTimeSpanState.until)
+    };
+
+    return timeSpan;
+  } catch (e) {
+    console.error('Could not fetch filter settings from session storage.');
+    return;
+  }
+};
+
+const getCategoryFromLocalStorage = (): DataCategory | undefined => {
+  const localStorageCategoryState = localStorage.getItem('category-state');
+  if (!localStorageCategoryState) return;
+
+  try {
+    const newCategory: DataCategory =
+      DataCategory[
+        JSON.parse(localStorageCategoryState) as keyof typeof DataCategory
+      ];
+
+    return newCategory;
+  } catch (e) {
+    console.error('Could not fetch filter settings from session storage.');
+    return;
+  }
 };

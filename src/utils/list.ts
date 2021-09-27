@@ -1,7 +1,6 @@
 import { User } from "../api/useApi";
-import { UsersState } from "../context/filter.initialValue";
 
-export const getUniqueUsers = (list: any[], users: UsersState): any[] => {
+export const getUniqueUsers = (list: any[], users: User[]): any[] => {
 
   list
   .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates

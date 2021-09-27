@@ -19,6 +19,7 @@ const ShowUsers = () => {
     <ShowUsersWrapper>
       {users.map((user, i) => (
         <FormControlLabel
+          key={user.alias}
           label={user.alias}
           control={
             <Checkbox checked={user.show} onClick={() => toggleShowUser(i)} />

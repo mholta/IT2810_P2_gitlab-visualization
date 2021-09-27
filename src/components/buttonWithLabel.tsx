@@ -1,8 +1,6 @@
-import { Button as MuiButton, IconButton } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
+import { Button as MuiButton } from '@material-ui/core';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '../context/layout.context';
-import SettingsIcon from '@material-ui/icons/Settings';
 import { motion, Variants } from 'framer-motion';
 
 interface IconButtonWithLabelProps {
