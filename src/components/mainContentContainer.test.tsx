@@ -7,7 +7,7 @@ import {
   initialFilterObject,
   ListOrGraph
 } from '../context/filter.initialValue';
-import { User } from '../api/types';
+import { DataObject, User } from '../api/types';
 
 jest.mock('../api/useApi');
 
@@ -19,37 +19,26 @@ const users: User[] = [
   { alias: 'User 3', id: 'Test 3', show: true, color: '#0f7292' }
 ];
 
-const commits = [
+const commits: DataObject[] = [
   {
-    id: 'ed899a2f4b50b4370feeea94676502b42383c746',
-    short_id: 'ed899a2f4b5',
     title: 'Replace sanitize with escape once',
-    author_name: 'Example User',
-    author_email: 'user@example.com',
-    authored_date: '2012-09-20T11:50:22+03:00',
-    committer_name: 'Administrator',
-    committer_email: 'admin@example.com',
-    committed_date: '2012-09-20T11:50:22+03:00',
-    created_at: '2012-09-20T11:50:22+03:00',
-    message: 'Replace sanitize with escape once',
-    parent_ids: ['6104942438c14ec7bd21c6cd5bd995272b3faff6'],
-    web_url:
-      'https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
+    user: {
+      alias: 'Example User',
+      id: 'Example User',
+      show: true,
+      color: '#000fff'
+    },
+    date: new Date('2012-09-20T11:50:22+03:00')
   },
   {
-    id: '6104942438c14ec7bd21c6cd5bd995272b3faff6',
-    short_id: '6104942438c',
-    title: 'Sanitize for network graph',
-    author_name: 'randx',
-    author_email: 'user@example.com',
-    committer_name: 'ExampleName',
-    committer_email: 'user@example.com',
-    committed_date: '2012-09-21T11:50:22+03:00',
-    created_at: '2012-09-20T09:06:12+03:00',
-    message: 'Sanitize for network graph',
-    parent_ids: ['ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba'],
-    web_url:
-      'https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
+    title: 'Make this a test',
+    user: {
+      alias: 'Example User 2 ',
+      id: 'Example User 2',
+      show: true,
+      color: '#ffffff'
+    },
+    date: new Date('2012-09-19T11:50:22+03:00')
   }
 ];
 
@@ -110,7 +99,8 @@ describe('mainContentContainer renders correctly', () => {
           setListOrGraph: () => {},
           setSinceDate: () => {},
           setUntilDate: () => {},
-          setUsersState: () => {}
+          setUsersState: () => {},
+          reset: () => {}
         }}
       >
         <MainContentContainer />

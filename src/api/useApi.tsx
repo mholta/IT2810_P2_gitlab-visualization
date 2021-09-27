@@ -27,13 +27,15 @@ const apiSwitch = async (
         // Map data to DataObjects
         const commits: DataObject[] = data
           .filter((commit: any) => commit.committed_date)
-          .map((commit: any): DataObject => {
-            return {
-              date: new Date(commit.committed_date),
-              title: commit.title,
-              user: users[users.map((u) => u.id).indexOf(commit.author_name)]
-            };
-          })
+          .map(
+            (commit: any): DataObject => {
+              return {
+                date: new Date(commit.committed_date),
+                title: commit.title,
+                user: users[users.map((u) => u.id).indexOf(commit.author_name)]
+              };
+            }
+          )
           .filter((commit: DataObject) => commit.user);
 
         return {
@@ -53,14 +55,15 @@ const apiSwitch = async (
 
         // Map data to DataObjects
         const issues: DataObject[] = data
-          .filter((issue: any) => issue.created_at)
+          .filter((issue: any) => issue.closed_at)
           .map(
             (issue: any): DataObject => ({
-              date: new Date(issue.created_at),
+              date: new Date(issue.closed_at),
               title: issue.title,
-              user: users[
-                users.map((u) => u.id).indexOf(issue.assignee?.name ?? '')
-              ]
+              user:
+                users[
+                  users.map((u) => u.id).indexOf(issue.assignee?.name ?? '')
+                ]
             })
           )
           .filter((issue: DataObject) => issue.user);
