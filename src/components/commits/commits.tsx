@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import CommitCard from './commitCard';
 import { User } from '../../api/useApi';
 import { ViewStreamOutlined, ViewWeekOutlined } from '@material-ui/icons';
+import IconButtonWithLabel from '../buttonWithLabel';
 
 interface CommitsProps {
   commits: CommitData[];
@@ -26,16 +27,14 @@ const Commits = ({ commits, users }: CommitsProps) => {
   return (
     <OuterScrollWrapper>
       <MainWrapper showColumns={showColumns}>
-        <ToggleButton
-          onClick={() => setShowColumns(!showColumns)}
-          color="primary"
-          variant="contained"
-          startIcon={
-            showColumns ? <ViewStreamOutlined /> : <ViewWeekOutlined />
-          }
-        >
-          {showColumns ? 'List' : 'Columns'}
-        </ToggleButton>
+        <ToggleButtonWrapper>
+          <IconButtonWithLabel
+            onClick={() => setShowColumns(!showColumns)}
+            icon={showColumns ? <ViewStreamOutlined /> : <ViewWeekOutlined />}
+            label={showColumns ? 'List' : 'Columns'}
+          />
+        </ToggleButtonWrapper>
+
         <ColumnTitlesWrapper columns={columns} showColumns={showColumns}>
           {showColumns ? (
             users.map((user, index) => (
@@ -83,10 +82,10 @@ interface CommitCardWrapperProps extends ColumnsProps {
   currentColumn: number;
 }
 
-const ToggleButton = styled(Button)`
+const ToggleButtonWrapper = styled.div`
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  left: 3%;
 `;
 
 const CommitCardWrapper = styled.div<CommitCardWrapperProps>`

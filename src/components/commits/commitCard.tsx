@@ -58,8 +58,8 @@ const CommitCardWrapper = styled(motion.div)<Partial<CommitCardProps>>`
   border: 1px solid #eee;
   border-radius: 0.4rem;
   background-color: white;
-  cursor: pointer;
   margin-bottom: calc(var(--padding) / 2);
+  word-break: break-word;
 
   transition: transform 200ms ease, box-shadow 200ms ease;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
@@ -67,10 +67,12 @@ const CommitCardWrapper = styled(motion.div)<Partial<CommitCardProps>>`
   ${(props) =>
     props.openOnClick
       ? `&:hover {
-        box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.14);
-        transform: scale(1.02);
-        }`
-      : ''}
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.14);
+      transform: scale(1.02);
+      cursor: pointer;
+    }`
+      : `
+    `}
 `;
 
 export default CommitCard;
