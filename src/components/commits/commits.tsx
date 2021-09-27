@@ -2,19 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useTheme, withTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import CommitCard from './commitCard';
-import { User } from '../../api/useApi';
+import { DataObject, User } from '../../api/types';
 import { ViewStreamOutlined, ViewWeekOutlined } from '@material-ui/icons';
 import IconButtonWithLabel from '../buttonWithLabel';
 import { useWindowWidth } from '@react-hook/window-size';
 
 interface CommitsProps {
-  commits: CommitData[];
+  commits: DataObject[];
   users: User[];
 }
 
 const Commits = ({ commits, users }: CommitsProps) => {
-  console.log('Commits rendered');
-
   const [showColumnToggle, setShowToggleButton] = useState<boolean>(false);
   const [showColumns, setShowColumns] = useState<boolean>(true);
 
@@ -38,14 +36,13 @@ const Commits = ({ commits, users }: CommitsProps) => {
     if (!showColumnToggle) setShowColumns(false);
   }, [showColumnToggle]);
 
-  const columns = users.length;
+  const columns = users.filter((u) => u.show).length;
 
-  const getColumnNum = (user: string) =>
-    users.map((user) => user.id).indexOf(user) + 1;
+  const getColumnNum = (user: User) => users.indexOf(user) + 1;
 
-  const getUser = (user: string) =>
-    users.map((user) => user.id).indexOf(user) !== -1
-      ? users[users.map((user) => user.id).indexOf(user)]
+  const getUser = (user: User) =>
+    users.map((user) => user).indexOf(user) !== -1
+      ? users[users.indexOf(user)]
       : null;
 
   return (
@@ -63,9 +60,11 @@ const Commits = ({ commits, users }: CommitsProps) => {
 
         <ColumnTitlesWrapper columns={columns} showColumns={showColumns}>
           {showColumns ? (
-            users.map((user, index) => (
-              <ColumnTitle key={'c-user-' + index}>{user.alias}</ColumnTitle>
-            ))
+            users
+              .filter((u) => u.show)
+              .map((user: User, index: number) => (
+                <ColumnTitle key={'c-user-' + index}>{user.alias}</ColumnTitle>
+              ))
           ) : (
             <ColumnTitle>Alle commits</ColumnTitle>
           )}
@@ -78,21 +77,23 @@ const Commits = ({ commits, users }: CommitsProps) => {
         </BackgroundWrapper>
 
         <CommitListWrapper columns={columns} showColumns={showColumns}>
-          {commits.map((commitData, index) => (
-            <CommitCardWrapper
-              columns={columns}
-              showColumns={showColumns}
-              currentColumn={getColumnNum(commitData.author_name)}
-              key={'commit-wrapper-' + index}
-            >
-              <CommitCard
-                commitData={commitData}
-                key={'commit-' + index}
-                openOnClick={!showColumns}
-                user={getUser(commitData.author_name)}
-              />
-            </CommitCardWrapper>
-          ))}
+          {commits
+            .filter((u) => u.user.show)
+            .map((commitData, index) => (
+              <CommitCardWrapper
+                columns={columns}
+                showColumns={showColumns}
+                currentColumn={getColumnNum(commitData.user)}
+                key={'commit-wrapper-' + index}
+              >
+                <CommitCard
+                  commitData={commitData}
+                  key={'commit-' + index}
+                  openOnClick={!showColumns}
+                  user={getUser(commitData.user)}
+                />
+              </CommitCardWrapper>
+            ))}
         </CommitListWrapper>
       </MainWrapper>
     </OuterScrollWrapper>
@@ -200,21 +201,5 @@ const BackgroundWrapper = withTheme(styled.div`
     opacity: 0;
   }
 `);
-
-export interface CommitData {
-  id: string;
-  short_id: string;
-  created_at: string; //"2021-09-13T10:53:17.000+02:00",
-  parent_ids: string[]; // ["925fd59727b8eab6c5f5b4115546d8636eb3f4c3"],
-  title: string; //"add prettier config #2",
-  message: string; //"add prettier config #2\n",
-  author_name: string; //"Magnus Holta",
-  author_email: string; //"magnus.holta@gmail.com",
-  authored_date?: string; //"2021-09-13T08:42:23.000+02:00",
-  committer_name: string; //"Magnus Holta",
-  committer_email: string; //"magnus.holta@gmail.com",
-  committed_date: string; //"2021-09-13T10:53:17.000+02:00",
-  web_url: string; //"https://gitlab.stud.idi.ntnu.no/it2810-h21/team-21/gitlab-visualization/-/commit/43c3a9c7d07c42402a0c27a58f73865dadae23bd"
-}
 
 export default Commits;

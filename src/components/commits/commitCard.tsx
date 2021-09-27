@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CommitData } from './commits';
 import { motion, Variants } from 'framer-motion';
-import { User } from '../../api/useApi';
+import { DataObject, User } from '../../api/types';
 
 interface CommitCardProps {
-  commitData: CommitData;
+  commitData: DataObject;
   openOnClick: boolean;
   user: User | null;
 }
@@ -27,7 +26,7 @@ class CommitCard extends React.Component<CommitCardProps, CommitCardState> {
         onClick={this.handleClick}
         openOnClick={this.props.openOnClick}
       >
-        <div>{this.props.commitData.message}</div>
+        <div>{this.props.commitData.title}</div>
         <ExtraInfoWrapper
           variants={variants}
           initial={'closed'}
@@ -36,7 +35,7 @@ class CommitCard extends React.Component<CommitCardProps, CommitCardState> {
           }
           transition={{ type: 'just' }}
         >
-          <div>Date: {this.props.commitData.committed_date}</div>
+          <div>Date: {this.props.commitData.date.toLocaleDateString()}</div>
           {this.props.user && <div>User: {this.props.user.alias}</div>}
         </ExtraInfoWrapper>
       </CommitCardWrapper>

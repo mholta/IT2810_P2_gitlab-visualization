@@ -1,7 +1,7 @@
-import { CommitData } from '../components/commits/commits';
 import { DataCategory } from '../context/filter.initialValue';
-import { getUniqueUsers } from '../utils/list';
+import { checkNewUsers } from '../utils/list';
 import { fetchCommits, fetchIssues } from './api';
+import { DataObject, User } from './types';
 
 export enum LoadingState {
   LOADING = 'loading',
@@ -9,14 +9,7 @@ export enum LoadingState {
   LOADED = 'loaded'
 }
 
-export interface User {
-  alias: string;
-  id: string;
-  show: boolean;
-  color: string;
-}
-
-const UseAPI = async (
+const apiSwitch = async (
   since: Date,
   until: Date,
   category: DataCategory,
@@ -24,73 +17,69 @@ const UseAPI = async (
 ): Promise<any> => {
   switch (category) {
     case DataCategory.COMMITS: {
-      return await fetchCommits(since, until)
-        .then((commits) => {
-          getUniqueUsers(
-            commits.map((d: CommitData) => d.author_name),
-            users
-          );
+      return await fetchCommits(since, until).then((data) => {
+        checkNewUsers(
+          data.map((d: any) => d.author_name),
+          users
+        );
 
-          const userCommits = [];
-          for (const commit of commits) {
-            for (const user of users) {
-              if (user.show && commit.author_name === user.id) {
-                userCommits.push(commit);
-                break;
-              }
-            }
-          }
+        // Map data to DataObjects
+        const commits: DataObject[] = data
+          .filter((commit: any) => commit.committed_date)
+          .map((commit: any): DataObject => {
+            console.log(
+              'Commit: ' +
+                commit.committed_date +
+                ' // ' +
+                new Date(commit.committed_date).toLocaleDateString()
+            );
+            return {
+              date: new Date(commit.committed_date),
+              title: commit.title,
+              user: users[users.map((u) => u.id).indexOf(commit.author_name)]
+            };
+          })
+          .filter((commit: DataObject) => commit.user.show);
 
-          return {
-            data: userCommits,
-            loadingState: LoadingState.LOADED,
-            updatedUsers: users
-          };
-        })
-        .catch((err) => {
-          console.log(err);
-
-          return {
-            loadingState: LoadingState.ERROR
-          };
-        });
+        return {
+          data: commits,
+          loadingState: LoadingState.LOADED,
+          updatedUsers: users
+        };
+      });
     }
+
     case DataCategory.ISSUES: {
-      return await fetchIssues(since, until)
-        .then((issues) => {
-          getUniqueUsers(
-            issues
-              .filter((i: any) => i.assignee)
-              .map((i: any) => i.assignee?.name),
-            users
-          );
+      return await fetchIssues(since, until).then((data) => {
+        checkNewUsers(
+          data.filter((i: any) => i.assignee).map((i: any) => i.assignee.name),
+          users
+        );
 
-          const userIssues = [];
-          for (const issue of issues) {
-            for (const user of users) {
-              if (user.show && issue.assignee?.name === user.id) {
-                userIssues.push(issue);
-                break;
-              }
-            }
-          }
+        // Map data to DataObjects
+        const issues: DataObject[] = data
+          .filter((issue: any) => issue.closed_at)
+          .map(
+            (issue: any): DataObject => ({
+              date: new Date(issue.closed_at),
+              title: issue.title,
+              user: users[
+                users.map((u) => u.id).indexOf(issue.assignee?.name ?? '')
+              ]
+            })
+          )
+          .filter((issue: DataObject) => issue.user?.show);
 
-          return {
-            data: userIssues,
-            loadingState: LoadingState.LOADED,
-            updatedUsers: users
-          };
-        })
-        .catch((err) => {
-          console.log(err);
-          return {
-            loadingState: LoadingState.ERROR
-          };
-        });
+        return {
+          data: issues,
+          loadingState: LoadingState.LOADED,
+          updatedUsers: users
+        };
+      });
     }
     default:
       break;
   }
 };
 
-export default UseAPI;
+export default apiSwitch;

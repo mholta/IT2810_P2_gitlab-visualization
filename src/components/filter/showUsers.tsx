@@ -15,6 +15,8 @@ const ShowUsers = () => {
     setUsersState(modifiedUsers);
   };
 
+  console.log(users);
+
   return (
     <ShowUsersWrapper>
       {users.map((user, i) => (

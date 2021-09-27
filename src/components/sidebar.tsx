@@ -11,8 +11,6 @@ import Filter from './filter/filter';
 import { LayoutContext } from '../context/layout.context';
 
 const SideBar = () => {
-  console.log('SideBar rendered');
-
   const { state, setMenuOpen } = useContext(LayoutContext);
 
   // Toogle sidebar on eventchange and function-call

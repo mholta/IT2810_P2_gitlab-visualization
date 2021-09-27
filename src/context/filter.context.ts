@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { User } from '../api/useApi';
+import { User } from '../api/types';
 import {
   FilterObject,
   DataCategory,

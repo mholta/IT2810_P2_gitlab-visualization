@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import UseAPI, { LoadingState, User } from '../api/useApi';
+import apiSwitch, { LoadingState, User } from '../api/useApi';
 import '@testing-library/jest-dom/extend-expect';
 import { CommitData } from './commits/commits';
 import MainContentContainer from './mainContentContainer';
@@ -11,7 +11,7 @@ import {
 
 jest.mock('../api/useApi');
 
-const mockUseAPI = UseAPI as jest.Mock<any>;
+const mockUseAPI = apiSwitch as jest.Mock<any>;
 // https://klzns.github.io/how-to-use-type-script-and-jest-mocks
 const users: User[] = [
   { alias: 'User 1', id: 'Test 1', show: true, color: '#4d56e2' },

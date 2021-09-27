@@ -1,4 +1,4 @@
-import { User } from '../api/useApi';
+import { User } from '../api/types';
 import { getDateBeforeToday } from '../utils/date';
 
 export enum DataCategory {
@@ -34,8 +34,6 @@ export const initialFilterObject: FilterObject = {
 };
 
 export const getInitialFilterObject = (): FilterObject => {
-  console.log('getInitialFilterObject');
-
   const filterObject: FilterObject = initialFilterObject;
 
   const timeSpan: TimeSpanObject | undefined = getTimeSpanFromSessionStorage();
@@ -58,7 +56,7 @@ const getTimeSpanFromSessionStorage = (): TimeSpanObject | undefined => {
     );
 
     const timeSpan: TimeSpanObject = {
-      since: new Date(newTimeSpanState.since),
+      since: new Date(/* newTimeSpanState.since */),
       until: new Date(newTimeSpanState.until)
     };
 

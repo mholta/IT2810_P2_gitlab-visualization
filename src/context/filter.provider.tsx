@@ -1,5 +1,5 @@
 import { ReactChild, useEffect, useState } from 'react';
-import { User } from '../api/useApi';
+import { User } from '../api/types';
 import { FilterContext } from './filter.context';
 import {
   DataCategory,
@@ -24,8 +24,6 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   };
 
   useEffect(() => {
-    console.log('useEffect SET Storage');
-
     updateSessionStorage(state);
     updateLocalStorage(state);
   }, [state]);
@@ -39,11 +37,9 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   const setUsersState = (usersList: User[]) =>
     setState({ ...state, users: usersList });
 
-  const setCategory = (category: DataCategory) => {
-    console.log('setCategory');
-
+  const setCategory = (category: DataCategory) =>
     setState({ ...state, category: category });
-  };
+
   const setListOrGraph = (listOrGraph: ListOrGraph) => {
     setState({ ...state, listOrGraph: listOrGraph });
   };

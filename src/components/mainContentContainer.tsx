@@ -1,8 +1,9 @@
+import React from 'react';
 import { Container } from '@material-ui/core';
 import TopBar from './topBar';
 import { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../context/filter.context';
-import UseAPI, { LoadingState } from '../api/useApi';
+import apiSwitch, { LoadingState } from '../api/useApi';
 import Commits from './commits/commits';
 import Graph, { ChartData } from './displayData/graph';
 import { DataCategory, ListOrGraph } from '../context/filter.initialValue';
@@ -12,6 +13,7 @@ import {
 } from '../utils/dataToGraph';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { DataObject } from '../api/types';
 
 const MainContentContainer = () => {
   const history = useHistory();
@@ -25,7 +27,7 @@ const MainContentContainer = () => {
   ) {
     history.replace('/login');
   }
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<DataObject[]>([]);
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.LOADING
   );
@@ -47,10 +49,7 @@ const MainContentContainer = () => {
   });
 
   useEffect(() => {
-    console.log('useEffect calling UseAPI');
-
-    UseAPI(since, until, category, users).then((apiResult: any) => {
-      console.log('UseAPI');
+    apiSwitch(since, until, category, users).then((apiResult: any) => {
       if (apiResult.loadingState === LoadingState.ERROR) {
         localStorage.removeItem('token');
         localStorage.removeItem('projectID');
@@ -62,26 +61,18 @@ const MainContentContainer = () => {
         });
       } else {
         setData(apiResult.data);
-        console.log('UseAPI after setData');
         setLoadingState(apiResult.loadingState);
-        console.log('UseAPI after setLoadingState');
         setUsersState(apiResult.updatedUsers);
-        console.log('UseAPI after setUsersState');
-        console.log(data);
       }
     });
     // eslint-disable-next-line
   }, [since, until, category, users]);
-
-  console.log('MainContentContainer rendered');
 
   useEffect(() => {
     // data, category
   }, [since, until, listOrGraph]);
 
   useEffect(() => {
-    console.log('useEffect produceCumulativeChart');
-
     if (listOrGraph === ListOrGraph.GRAPH) {
       if (category === DataCategory.COMMITS) {
         setChartData(

@@ -3,8 +3,6 @@ import MainContentContainer from '../components/mainContentContainer';
 import SideBar from '../components/sidebar';
 
 const MainPage = () => {
-  console.log('MainPage rendered');
-
   return (
     <div>
       <Header />
