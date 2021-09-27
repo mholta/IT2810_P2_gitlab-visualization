@@ -47,7 +47,8 @@ const MainContentContainer = () => {
       console.log('UseAPI after setUsersState');
       console.log(data);
     });
-  }, [since, until, category, users, setUsersState, data]);
+    // eslint-disable-next-line
+  }, [since, until, category, users]);
 
   console.log('MainContentContainer rendered');
 
