@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { withTheme } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { useTheme, withTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import CommitCard from './commitCard';
 import { User } from '../../api/useApi';
 import { ViewStreamOutlined, ViewWeekOutlined } from '@material-ui/icons';
 import IconButtonWithLabel from '../buttonWithLabel';
+import { useWindowWidth } from '@react-hook/window-size';
 
 interface CommitsProps {
   commits: CommitData[];
@@ -14,7 +15,28 @@ interface CommitsProps {
 const Commits = ({ commits, users }: CommitsProps) => {
   console.log('Commits rendered');
 
+  const [showColumnToggle, setShowToggleButton] = useState<boolean>(false);
   const [showColumns, setShowColumns] = useState<boolean>(true);
+
+  const width: number = useWindowWidth();
+
+  const {
+    breakpoints: {
+      values: { md }
+    }
+  } = useTheme();
+
+  useEffect(() => {
+    const showColumnToggleBasedOnWidth = width > md;
+
+    if (showColumnToggleBasedOnWidth !== showColumnToggle) {
+      setShowToggleButton(showColumnToggleBasedOnWidth);
+    }
+  }, [width, md, showColumnToggle]);
+
+  useEffect(() => {
+    if (!showColumnToggle) setShowColumns(false);
+  }, [showColumnToggle]);
 
   const columns = users.length;
 
@@ -30,11 +52,13 @@ const Commits = ({ commits, users }: CommitsProps) => {
     <OuterScrollWrapper>
       <MainWrapper showColumns={showColumns}>
         <ToggleButtonWrapper>
-          <IconButtonWithLabel
-            onClick={() => setShowColumns(!showColumns)}
-            icon={showColumns ? <ViewStreamOutlined /> : <ViewWeekOutlined />}
-            label={showColumns ? 'List' : 'Columns'}
-          />
+          {showColumnToggle && (
+            <IconButtonWithLabel
+              onClick={() => setShowColumns(!showColumns)}
+              icon={showColumns ? <ViewStreamOutlined /> : <ViewWeekOutlined />}
+              label={showColumns ? 'List' : 'Columns'}
+            />
+          )}
         </ToggleButtonWrapper>
 
         <ColumnTitlesWrapper columns={columns} showColumns={showColumns}>
