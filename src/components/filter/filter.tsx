@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import TimeSpan from './timeSpan';
 import CategorySelect from './categorySelect';
 import ShowUsers from './showUsers';
+import ViewTypeToggle from './viewTypeToggle';
 
 const Filter = () => {
   return (
@@ -9,6 +10,7 @@ const Filter = () => {
       <CategorySelect />
       <TimeSpan />
       <ShowUsers />
+      <ViewTypeToggle />
     </FilterWrapper>
   );
 };
