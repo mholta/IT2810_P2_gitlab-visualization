@@ -10,6 +10,7 @@ import {
   produceBarChartDataFromIssues,
   produceCumulativeChartDataFromCommits
 } from '../utils/dataToGraph';
+import styled from 'styled-components';
 
 const MainContentContainer = () => {
   const [data, setData] = useState<any>([]);
@@ -73,6 +74,16 @@ const MainContentContainer = () => {
   return (
     <Container>
       {/* START */}
+      <ScalableImage
+        src="gitlab-logo/gitlab-logo-gray-rgb-high.png"
+        srcSet="gitlab-logo/gitlab-logo-gray-rgb-low.png 313w,
+                gitlab-logo/gitlab-logo-gray-rgb-mid.png 625w,
+                gitlab-logo/gitlab-logo-gray-rgb-high.png 1250w,
+                gitlab-logo/gitlab-logo-gray-rgb-original.png 2500w"
+        sizes="(max-width: 313px) 313px, (max-width: 625px) 625px, (max-width: 1250px) 1250px, 2500px"
+        alt="GitLab Logo"
+      />
+
       <div>
         {loadingState === LoadingState.LOADING && <div>loading</div>}
         {loadingState === LoadingState.LOADED && (
@@ -95,5 +106,9 @@ const MainContentContainer = () => {
     </Container>
   );
 };
+
+const ScalableImage = styled.img`
+  width: 100%;
+`;
 
 export default MainContentContainer;
