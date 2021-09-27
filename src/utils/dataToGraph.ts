@@ -4,6 +4,7 @@ import { ChartData } from "../components/displayData/graph";
 import { FilterContext } from "../context/filter.context";
 import { getDateBeforeToday, getDateMinusDays, getDaysBetween } from "./date";
 import {User} from "../api/useApi";
+import { UsersState } from "../context/filter.initialValue";
 
 const setLabels = (since : Date, until: Date) => {
     let day: Date = new Date(since);
@@ -49,7 +50,7 @@ const produceChartDataFromCommits = (data: CommitData[], since: Date, until: Dat
     const labels: string[] = setLabels(getDateMinusDays(firstDate, -earliestDay), until);
     return [commitsByUserAtDate, userNames, labels, earliestDay];
 }
-export const produceCumulativeChartDataFromCommits = (data: CommitData[], since: Date, until: Date, users: User[]) => {
+export const produceCumulativeChartDataFromCommits = (data: CommitData[], since: Date, until: Date, users: UsersState) => {
     const [commitsByUserAtDate, userNames, labels, earliestDay] = produceChartDataFromCommits(data, since, until);
     let chart: ChartData = {
         chartType: "line",
@@ -74,7 +75,7 @@ export const produceCumulativeChartDataFromCommits = (data: CommitData[], since:
       });
       return chart;  
 }
-export const produceBarChartDataFromCommits = (data: CommitData[], since: Date, until: Date, users: User[]) => {
+export const produceBarChartDataFromCommits = (data: CommitData[], since: Date, until: Date, users: UsersState) => {
     const [commitsByUserAtDate, userNames, labels, earliestDay] = produceChartDataFromCommits(data, since, until);
     let chart: ChartData = {
         chartType: "bar",

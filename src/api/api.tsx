@@ -1,4 +1,3 @@
-import { rejects } from 'assert';
 const b = [
   'zzN9Ms1GcC-mxfQKZbu_',
   'YYSpNGoLnbPKsQxZr6Rs',
@@ -25,7 +24,7 @@ export const fetchCommits = (
   page: string = '1'
 ) => {
   let pageNum: string | null;
-  return new Promise<any>((resolve) => {
+  return new Promise<any>((resolve, reject) => {
     fetch(
       endpoint +
         'repository/commits?' +
@@ -53,7 +52,7 @@ export const fetchCommits = (
         }
       })
       .then((commits) => resolve(commits))
-      .catch((err) => rejects(err));
+      .catch((err) => reject(err));
   });
 };
 
@@ -64,7 +63,7 @@ export const fetchIssues = (
   page: string = '1'
 ) => {
   let pageNum: string | null;
-  return new Promise<any>((resolve) => {
+  return new Promise<any>((resolve, reject) => {
     fetch(
       endpoint +
         'issues?' +
@@ -90,6 +89,6 @@ export const fetchIssues = (
         }
       })
       .then((issues) => resolve(issues))
-      .catch((err) => rejects(err));
+      .catch((err) => reject(err));
   });
 };

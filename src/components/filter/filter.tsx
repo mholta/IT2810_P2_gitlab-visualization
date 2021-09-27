@@ -1,13 +1,14 @@
-import React from 'react';
 import styled from 'styled-components';
 import TimeSpan from './timeSpan';
 import CategorySelect from './categorySelect';
+import ShowUsers from './showUsers';
 
 const Filter = () => {
   return (
     <FilterWrapper>
       <CategorySelect />
       <TimeSpan />
+      <ShowUsers />
     </FilterWrapper>
   );
 };

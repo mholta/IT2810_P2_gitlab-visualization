@@ -14,8 +14,6 @@ export interface TimeSpanObject {
   until: Date;
 }
 
-
-
 export type UsersState = User[];
 
 export interface FilterObject {

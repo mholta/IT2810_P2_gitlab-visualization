@@ -18,7 +18,8 @@ const MainContentContainer = () => {
     state: {
       timeSpan: { since, until },
       category,
-      listOrGraph
+      listOrGraph,
+      users
     }
   } = useContext(FilterContext);
   const [chartData, setChartData] = useState<ChartData>({
@@ -27,7 +28,7 @@ const MainContentContainer = () => {
     datasets: []
   });
 
-  const { data, users, loadingState } = UseAPI();
+  const { data, loadingState } = UseAPI();
   useEffect(() => {
     if (listOrGraph === ListOrGraph.GRAPH) {
       if (category === DataCategory.COMMITS) {
@@ -38,7 +39,7 @@ const MainContentContainer = () => {
         setChartData(produceBarChartDataFromIssues(data, since, until, users));
       }
     }
-  }, [data, users, loadingState, listOrGraph]);
+  }, [data, loadingState, listOrGraph]);
 
   return (
     <Container>

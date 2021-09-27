@@ -1,93 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { CommitData } from '../components/commits/commits';
+import { useContext, useEffect, useState } from 'react';
+import Commits, { CommitData } from '../components/commits/commits';
 import { FilterContext } from '../context/filter.context';
 import { DataCategory } from '../context/filter.initialValue';
+import { getUniqueUsers } from '../utils/list';
 import { fetchCommits, fetchIssues } from './api';
-
-const UseAPI = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [userNum, setUserNum] = useState<number>(1);
-  const [data, setData] = useState<any>([]);
-  const [loadingState, setLoadingState] = useState<LoadingState>(
-    LoadingState.LOADING
-  );
-
-  const { state: filterState } = useContext(FilterContext);
-  useEffect(() => {
-    setLoadingState(LoadingState.LOADING);
-    switch (filterState.category) {
-      case DataCategory.COMMITS: {
-        fetchCommits(
-          filterState.timeSpan.since,
-          filterState.timeSpan.until
-        ).then((commits) => {
-          let currentUserNum: number = userNum;
-
-          commits
-            .map((d: CommitData) => d.author_name)
-            .filter((v: any, i: number, a: any) => a && a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-            .forEach((name: any) => {
-              if (users.map((u) => u.id).indexOf(name) === -1) {
-                const newUser: User = {
-                  alias: 'User ' + currentUserNum,
-                  id: name,
-                  show: true,
-                  color: '#' + Math.random().toString(16).substr(-6)
-                };
-                users.push(newUser);
-
-                currentUserNum++;
-              }
-            });
-
-          setUserNum(currentUserNum);
-
-          setData(commits);
-          setLoadingState(LoadingState.LOADED);
-        });
-        break;
-      }
-      case DataCategory.ISSUES: {
-        fetchIssues(
-          filterState.timeSpan.since,
-          filterState.timeSpan.until
-        ).then((issues) => {
-          let currentUserNum: number = userNum;
-
-          issues
-            .map((i: any) => i.assignee?.name)
-            .filter((v: any, i: number, a: any) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
-            .forEach((name: string) => {
-              if (
-                users.map((u) => u.id).indexOf(name) === -1 &&
-                name !== undefined
-              ) {
-                const newUser: User = {
-                  alias: 'User ' + currentUserNum,
-                  id: name,
-                  show: true,
-                  color: '#' + Math.random().toString(16).substr(-6)
-                };
-                users.push(newUser);
-
-                currentUserNum++;
-              }
-            });
-
-          setUserNum(currentUserNum);
-
-          setData(issues);
-          setLoadingState(LoadingState.LOADED);
-        });
-        break;
-      }
-      default:
-        break;
-    }
-  }, [filterState]); // must be changed later on
-
-  return { data, users, loadingState };
-};
 
 export enum LoadingState {
   LOADING = 'loading',
@@ -101,5 +17,80 @@ export interface User {
   show: boolean;
   color: string;
 }
+
+const UseAPI = () => {
+  const [data, setData] = useState<any>([]);
+  const [loadingState, setLoadingState] = useState<LoadingState>(
+    LoadingState.LOADING
+  );
+
+  const { state: filterState, setUsersState } = useContext(FilterContext);
+
+  useEffect(() => {
+    setLoadingState(LoadingState.LOADING);
+    switch (filterState.category) {
+      case DataCategory.COMMITS: {
+        fetchCommits(
+          filterState.timeSpan.since,
+          filterState.timeSpan.until
+        ).then((commits) => {
+          const users = filterState.users;
+
+          getUniqueUsers(
+            commits.map((d: CommitData) => d.author_name),
+            users
+          );
+
+          const userCommits = [];
+          for (const commit of commits) {
+            for (const user of users) {
+              if (user.show && commit.author_name == user.id) {
+                userCommits.push(commit);
+                break;
+              }
+            }
+          }
+
+          setUsersState(users);
+          setData(userCommits);
+          setLoadingState(LoadingState.LOADED);
+        });
+        break;
+      }
+      case DataCategory.ISSUES: {
+        fetchIssues(
+          filterState.timeSpan.since,
+          filterState.timeSpan.until
+        ).then((issues) => {
+          const users = filterState.users;
+
+          getUniqueUsers(
+            issues.map((i: any) => i.assignee?.name),
+            users
+          );
+
+          const userIssues = [];
+          for (const issue of issues) {
+            for (const user of users) {
+              if (user.show && issue.assignee?.name == user.id) {
+                userIssues.push(issue);
+                break;
+              }
+            }
+          }
+
+          setUsersState(users);
+          setData(userIssues);
+          setLoadingState(LoadingState.LOADED);
+        });
+        break;
+      }
+      default:
+        break;
+    }
+  }, [filterState]);
+
+  return { data, loadingState };
+};
 
 export default UseAPI;
