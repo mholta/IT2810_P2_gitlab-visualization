@@ -11,8 +11,20 @@ import {
   produceCumulativeChartDataFromCommits
 } from '../utils/dataToGraph';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 const MainContentContainer = () => {
+  const history = useHistory();
+  if (
+    !(
+      (localStorage.getItem('projectId') !== null ||
+        sessionStorage.getItem('projectId') !== null) &&
+      (localStorage.getItem('token') !== null ||
+        sessionStorage.getItem('token') !== null)
+    )
+  ) {
+    history.replace('/login');
+  }
   const [data, setData] = useState<any>([]);
   const [loadingState, setLoadingState] = useState<LoadingState>(
     LoadingState.LOADING
@@ -27,7 +39,7 @@ const MainContentContainer = () => {
     },
     setUsersState
   } = useContext(FilterContext);
-
+  console.log(users);
   const [chartData, setChartData] = useState<ChartData>({
     chartType: 'bar',
     labels: [],
@@ -39,14 +51,24 @@ const MainContentContainer = () => {
 
     UseAPI(since, until, category, users).then((apiResult: any) => {
       console.log('UseAPI');
-
-      setData(apiResult.data);
-      console.log('UseAPI after setData');
-      setLoadingState(apiResult.loadingState);
-      console.log('UseAPI after setLoadingState');
-      setUsersState(apiResult.updatedUsers);
-      console.log('UseAPI after setUsersState');
-      console.log(data);
+      if (apiResult.loadingState === LoadingState.ERROR) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('projectID');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('projectID');
+        history.replace({
+          pathname: '/login',
+          state: 'There was an error with the projectID or the Access-token'
+        });
+      } else {
+        setData(apiResult.data);
+        console.log('UseAPI after setData');
+        setLoadingState(apiResult.loadingState);
+        console.log('UseAPI after setLoadingState');
+        setUsersState(apiResult.updatedUsers);
+        console.log('UseAPI after setUsersState');
+        console.log(data);
+      }
     });
     // eslint-disable-next-line
   }, [since, until, category, users]);

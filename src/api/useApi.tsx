@@ -24,54 +24,69 @@ const UseAPI = async (
 ): Promise<any> => {
   switch (category) {
     case DataCategory.COMMITS: {
-      return await fetchCommits(since, until).then((commits) => {
-        getUniqueUsers(
-          commits.map((d: CommitData) => d.author_name),
-          users
-        );
+      return await fetchCommits(since, until)
+        .then((commits) => {
+          getUniqueUsers(
+            commits.map((d: CommitData) => d.author_name),
+            users
+          );
 
-        const userCommits = [];
-        for (const commit of commits) {
-          for (const user of users) {
-            if (user.show && commit.author_name === user.id) {
-              userCommits.push(commit);
-              break;
+          const userCommits = [];
+          for (const commit of commits) {
+            for (const user of users) {
+              if (user.show && commit.author_name === user.id) {
+                userCommits.push(commit);
+                break;
+              }
             }
           }
-        }
 
-        return {
-          data: userCommits,
-          loadingState: LoadingState.LOADED,
-          updatedUsers: users
-        };
-      });
+          return {
+            data: userCommits,
+            loadingState: LoadingState.LOADED,
+            updatedUsers: users
+          };
+        })
+        .catch((err) => {
+          console.log(err);
+
+          return {
+            loadingState: LoadingState.ERROR
+          };
+        });
     }
     case DataCategory.ISSUES: {
-      return await fetchIssues(since, until).then((issues) => {
-        getUniqueUsers(
-          issues
-            .filter((i: any) => i.assignee)
-            .map((i: any) => i.assignee?.name),
-          users
-        );
+      return await fetchIssues(since, until)
+        .then((issues) => {
+          getUniqueUsers(
+            issues
+              .filter((i: any) => i.assignee)
+              .map((i: any) => i.assignee?.name),
+            users
+          );
 
-        const userIssues = [];
-        for (const issue of issues) {
-          for (const user of users) {
-            if (user.show && issue.assignee?.name === user.id) {
-              userIssues.push(issue);
-              break;
+          const userIssues = [];
+          for (const issue of issues) {
+            for (const user of users) {
+              if (user.show && issue.assignee?.name === user.id) {
+                userIssues.push(issue);
+                break;
+              }
             }
           }
-        }
 
-        return {
-          data: userIssues,
-          loadingState: LoadingState.LOADED,
-          updatedUsers: users
-        };
-      });
+          return {
+            data: userIssues,
+            loadingState: LoadingState.LOADED,
+            updatedUsers: users
+          };
+        })
+        .catch((err) => {
+          console.log(err);
+          return {
+            loadingState: LoadingState.ERROR
+          };
+        });
     }
     default:
       break;

@@ -6,17 +6,36 @@ const b = [
   'LJuzVUq5XJTK1P3i5V5A',
   'zKPYXxMgutMm5oXDf1sc'
 ];
-const a = b[Math.floor(Math.random() * 6)];
+// const a = b[Math.floor(Math.random() * 6)];
 
-const endpoint = 'https://gitlab.stud.idi.ntnu.no/api/v4/projects/11839/';
-const header = {
-  method: 'GET',
-  headers: new Headers({
-    Authorization: 'Bearer ' + a,
-    'Content-Type': 'application/json'
-  })
+// const endpoint = 'https://gitlab.stud.idi.ntnu.no/api/v4/projects/11839/';
+
+let endpoint = '';
+let endpointToken = '';
+let header: any;
+const updateEndpoint = () => {
+  const projectIdLocal = localStorage.getItem('projectId');
+  const tokenLocal = localStorage.getItem('token');
+  const projectIdSession = sessionStorage.getItem('projectId');
+  const tokenSession = sessionStorage.getItem('token');
+  if (projectIdLocal) {
+    endpoint = projectIdLocal;
+  } else if (projectIdSession) {
+    endpoint = projectIdSession;
+  }
+  if (tokenLocal) {
+    endpointToken = tokenLocal;
+  } else if (tokenSession) {
+    endpointToken = tokenSession;
+  }
+  header = {
+    method: 'GET',
+    headers: new Headers({
+      Authorization: 'Bearer ' + endpointToken,
+      'Content-Type': 'application/json'
+    })
+  };
 };
-
 export const fetchCommits = (
   since: Date,
   until: Date,
@@ -24,10 +43,13 @@ export const fetchCommits = (
   page: string = '1'
 ) => {
   let pageNum: string | null;
+  updateEndpoint();
   return new Promise<any>((resolve, reject) => {
     fetch(
-      endpoint +
-        'repository/commits?' +
+      // 'https://gitlab.stud.idi.ntnu.no/api/v4/projects/11839' +
+      'https://gitlab.stud.idi.ntnu.no/api/v4/projects/' +
+        endpoint +
+        '/repository/commits?' +
         new URLSearchParams({
           since: since.toISOString(),
           until: until.toISOString(),
@@ -37,6 +59,9 @@ export const fetchCommits = (
       header
     )
       .then((res) => {
+        if (!res.ok) {
+          throw new Error('Wrong token or project ID');
+        }
         pageNum = res.headers.get('x-next-page');
         return res.json();
       })
@@ -51,7 +76,9 @@ export const fetchCommits = (
         }
       })
       .then((commits) => resolve(commits))
-      .catch((err) => reject(err));
+      .catch((err) => {
+        return reject(err);
+      });
   });
 };
 
@@ -62,10 +89,12 @@ export const fetchIssues = (
   page: string = '1'
 ) => {
   let pageNum: string | null;
+  updateEndpoint();
   return new Promise<any>((resolve, reject) => {
     fetch(
-      endpoint +
-        'issues?' +
+      'https://gitlab.stud.idi.ntnu.no/api/v4/projects/' +
+        endpoint +
+        '/issues?' +
         new URLSearchParams({
           since: since.toISOString(),
           until: until.toISOString(),
@@ -75,6 +104,9 @@ export const fetchIssues = (
       header
     )
       .then((res) => {
+        if (!res.ok) {
+          throw new Error('Wrong token or project ID');
+        }
         pageNum = res.headers.get('x-next-page');
         return res.json();
       })

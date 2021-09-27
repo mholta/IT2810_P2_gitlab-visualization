@@ -1,10 +1,11 @@
-import React from 'react';
 import './App.css';
 import theme from './styles/theme';
 import MainPage from './pages/mainPage';
 import { ThemeProvider, StylesProvider } from '@material-ui/core';
 import { FilterContextProvider } from './context/filter.provider';
 import { LayoutContextProvider } from './context/layout.provider';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Login from './pages/login';
 
 function App() {
   return (
@@ -12,7 +13,12 @@ function App() {
       <ThemeProvider theme={theme}>
         <LayoutContextProvider>
           <FilterContextProvider>
-            <MainPage />
+            <Router>
+              <Switch>
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/" component={MainPage} />
+              </Switch>
+            </Router>
           </FilterContextProvider>
         </LayoutContextProvider>
       </ThemeProvider>
