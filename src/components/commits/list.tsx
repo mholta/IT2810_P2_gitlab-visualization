@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTheme, withTheme } from '@material-ui/core';
 import styled from 'styled-components';
-import CommitCard from './commitCard';
+import ListCard from './list.card';
 import { DataObject, User } from '../../api/types';
 import { ViewStreamOutlined, ViewWeekOutlined } from '@material-ui/icons';
 import IconButtonWithLabel from '../buttonWithLabel';
 import { useWindowWidth } from '@react-hook/window-size';
+import { FilterContext } from '../../context/filter.context';
 
-interface CommitsProps {
+interface ListProps {
   commits: DataObject[];
   users: User[];
 }
 
-const Commits = ({ commits, users }: CommitsProps) => {
+const List = ({ commits, users }: ListProps) => {
   const [showColumnToggle, setShowToggleButton] = useState<boolean>(false);
   const [showColumns, setShowColumns] = useState<boolean>(true);
 
   const width: number = useWindowWidth();
+
+  const {
+    state: { category }
+  } = useContext(FilterContext);
 
   const {
     breakpoints: {
@@ -66,7 +71,7 @@ const Commits = ({ commits, users }: CommitsProps) => {
                 <ColumnTitle key={'c-user-' + index}>{user.alias}</ColumnTitle>
               ))
           ) : (
-            <ColumnTitle>Alle commits</ColumnTitle>
+            <ColumnTitle>All {category.toLowerCase()}</ColumnTitle>
           )}
         </ColumnTitlesWrapper>
         <BackgroundWrapper>
@@ -76,25 +81,25 @@ const Commits = ({ commits, users }: CommitsProps) => {
             ))}
         </BackgroundWrapper>
 
-        <CommitListWrapper columns={columns} showColumns={showColumns}>
+        <ListWrapper columns={columns} showColumns={showColumns}>
           {commits
             .filter((u) => u.user.show)
             .map((commitData, index) => (
-              <CommitCardWrapper
+              <CardWrapper
                 columns={columns}
                 showColumns={showColumns}
                 currentColumn={getColumnNum(commitData.user)}
                 key={'commit-wrapper-' + index}
               >
-                <CommitCard
+                <ListCard
                   commitData={commitData}
                   key={'commit-' + index}
                   openOnClick={!showColumns}
                   user={getUser(commitData.user)}
                 />
-              </CommitCardWrapper>
+              </CardWrapper>
             ))}
-        </CommitListWrapper>
+        </ListWrapper>
       </MainWrapper>
     </OuterScrollWrapper>
   );
@@ -115,7 +120,7 @@ const ToggleButtonWrapper = styled.div`
   left: 3%;
 `;
 
-const CommitCardWrapper = styled.div<CommitCardWrapperProps>`
+const CardWrapper = styled.div<CommitCardWrapperProps>`
   ${(props) =>
     props.showColumns
       ? props.currentColumn
@@ -137,7 +142,7 @@ const CommitCardWrapper = styled.div<CommitCardWrapperProps>`
   gap: 0 var(--padding);
 `;
 
-const CommitListWrapper = styled.div<ColumnsProps>`
+const ListWrapper = styled.div<ColumnsProps>`
   padding: var(--padding);
   position: relative;
   z-index: 2;
@@ -202,4 +207,4 @@ const BackgroundWrapper = withTheme(styled.div`
   }
 `);
 
-export default Commits;
+export default List;

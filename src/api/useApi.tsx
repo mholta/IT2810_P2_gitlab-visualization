@@ -27,12 +27,6 @@ const apiSwitch = async (
         const commits: DataObject[] = data
           .filter((commit: any) => commit.committed_date)
           .map((commit: any): DataObject => {
-            console.log(
-              'Commit: ' +
-                commit.committed_date +
-                ' // ' +
-                new Date(commit.committed_date).toLocaleDateString()
-            );
             return {
               date: new Date(commit.committed_date),
               title: commit.title,
@@ -58,10 +52,10 @@ const apiSwitch = async (
 
         // Map data to DataObjects
         const issues: DataObject[] = data
-          .filter((issue: any) => issue.closed_at)
+          .filter((issue: any) => issue.created_at)
           .map(
             (issue: any): DataObject => ({
-              date: new Date(issue.closed_at),
+              date: new Date(issue.created_at),
               title: issue.title,
               user: users[
                 users.map((u) => u.id).indexOf(issue.assignee?.name ?? '')

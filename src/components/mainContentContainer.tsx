@@ -4,12 +4,12 @@ import TopBar from './topBar';
 import { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../context/filter.context';
 import apiSwitch, { LoadingState } from '../api/useApi';
-import Commits from './commits/commits';
+import List from './commits/list';
 import Graph, { ChartData } from './displayData/graph';
 import { DataCategory, ListOrGraph } from '../context/filter.initialValue';
 import {
-  produceBarChartDataFromIssues,
-  produceCumulativeChartDataFromCommits
+  produceBarChartDataFromDataObjects,
+  produceCumulativeGraphChartDataFromDataObjects
 } from '../utils/dataToGraph';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
@@ -76,10 +76,17 @@ const MainContentContainer = () => {
     if (listOrGraph === ListOrGraph.GRAPH) {
       if (category === DataCategory.COMMITS) {
         setChartData(
-          produceCumulativeChartDataFromCommits(data, since, until, users)
+          produceCumulativeGraphChartDataFromDataObjects(
+            data,
+            since,
+            until,
+            users
+          )
         );
       } else if (category === DataCategory.ISSUES) {
-        setChartData(produceBarChartDataFromIssues(data, since, until, users));
+        setChartData(
+          produceBarChartDataFromDataObjects(data, since, until, users)
+        );
       }
     }
   }, [data, listOrGraph, category, since, until, users]);
@@ -103,7 +110,7 @@ const MainContentContainer = () => {
           <div>
             {listOrGraph === ListOrGraph.LIST ? (
               <div id="listOfCommits">
-                <Commits commits={data} users={users} />
+                <List commits={data} users={users} />
               </div>
             ) : (
               <div id="graph">

@@ -3,21 +3,34 @@ import { ChartData } from '../components/displayData/graph';
 import { getDateMinusDays, getDaysBetween } from './date';
 import { User } from '../api/types';
 
-const setLabels = (since: Date, until: Date) => {
+// TODO: Could probably change to a >== b
+const datesAreEqual = (a: Date, b: Date): boolean =>
+  a.getDate() === b.getDate() &&
+  a.getMonth() === b.getMonth() &&
+  a.getFullYear() === b.getFullYear();
+
+/**
+ * Method for getting a list of labels to display in chart
+ *
+ * @param since start date
+ * @param until end date
+ * @returns list of week day strings
+ */
+const getChartLabels = (since: Date, until: Date): string[] => {
   let day: Date = new Date(since);
+
   const labels = [];
-  const dayOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  while (
-    !(
-      day.getDate() === until.getDate() &&
-      day.getMonth() === until.getMonth() &&
-      day.getFullYear() === until.getFullYear()
-    )
-  ) {
-    labels.push(dayOfWeek[day.getDay()]);
+  const DAY_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const getDayOfWeek = (d: Date) => DAY_OF_WEEK[d.getDay()];
+
+  while (!datesAreEqual(day, until)) {
+    labels.push(getDayOfWeek(day));
+    // Why
     day.setDate(day.getDate() + 1);
   }
-  labels.push(dayOfWeek[day.getDay()]);
+
+  labels.push(getDayOfWeek(day));
   return labels;
 };
 
@@ -26,50 +39,55 @@ const produceChartDataFromDataObject = (
   since: Date,
   until: Date
 ): [{ [name: string]: number[] }, string[], string[], number] => {
-  const commitsByUserAtDate: {
+  const objectsByUserAtDate: {
     [name: string]: number[];
   } = {};
+
   let earliestDay = getDaysBetween(since, until);
   let numberOfDays = earliestDay + 1;
+
   const userNames: string[] = [];
-  if (data.length > 0) {
-    data.forEach((dataObject: DataObject) => {
-      const day = getDaysBetween(since, new Date(dataObject.date));
-      if (day < earliestDay) {
-        earliestDay = day;
-      }
-      if (dataObject.user.id in commitsByUserAtDate) {
-        commitsByUserAtDate[dataObject.user.id][day] += 1;
-      } else {
-        userNames.push(dataObject.user.id);
-        commitsByUserAtDate[dataObject.user.id] = Array(numberOfDays).fill(0);
-        commitsByUserAtDate[dataObject.user.id][day] = 1;
-      }
-    });
-  }
+
+  data.forEach((dataObject: DataObject) => {
+    const day = getDaysBetween(since, dataObject.date);
+
+    if (day < earliestDay) {
+      earliestDay = day;
+    }
+    if (dataObject.user.id in objectsByUserAtDate) {
+      objectsByUserAtDate[dataObject.user.id][day] += 1;
+    } else {
+      userNames.push(dataObject.user.id);
+      objectsByUserAtDate[dataObject.user.id] = Array(numberOfDays).fill(0);
+      objectsByUserAtDate[dataObject.user.id][day] = 1;
+    }
+  });
+
   const firstDate = new Date(since);
-  const labels: string[] = setLabels(
+  const labels: string[] = getChartLabels(
     getDateMinusDays(firstDate, -earliestDay),
     until
   );
-  return [commitsByUserAtDate, userNames, labels, earliestDay];
+
+  return [objectsByUserAtDate, userNames, labels, earliestDay];
 };
 
-export const produceCumulativeChartDataFromCommits = (
+export const produceCumulativeGraphChartDataFromDataObjects = (
   data: DataObject[],
   since: Date,
   until: Date,
   users: User[]
 ) => {
-  const [commitsByUserAtDate, userNames, labels, earliestDay] =
+  const [objectsByUserAtDate, userNames, labels, earliestDay] =
     produceChartDataFromDataObject(data, since, until);
+
   let chart: ChartData = {
     chartType: 'line',
     labels: labels,
     datasets: []
   };
   userNames.forEach((userName) => {
-    commitsByUserAtDate[userName] = commitsByUserAtDate[userName].map(
+    objectsByUserAtDate[userName] = objectsByUserAtDate[userName].map(
       (
         (sum) => (noCommits: number) =>
           (sum += noCommits)
@@ -81,7 +99,7 @@ export const produceCumulativeChartDataFromCommits = (
       datasets: [
         ...chart.datasets,
         {
-          data: commitsByUserAtDate[userName].slice(earliestDay),
+          data: objectsByUserAtDate[userName].slice(earliestDay),
           label: userWithColor?.alias ?? 'X',
           backgroundColor: userWithColor?.color ?? '#000',
           borderColor: userWithColor?.color ?? '#000'
@@ -91,19 +109,22 @@ export const produceCumulativeChartDataFromCommits = (
   });
   return chart;
 };
-export const produceBarChartDataFromCommits = (
+
+export const produceBarChartDataFromDataObjects = (
   data: DataObject[],
   since: Date,
   until: Date,
   users: User[]
 ) => {
-  const [commitsByUserAtDate, userNames, labels, earliestDay] =
+  const [objectsByUserAtDate, userNames, labels, earliestDay] =
     produceChartDataFromDataObject(data, since, until);
+
   let chart: ChartData = {
     chartType: 'bar',
     labels: labels,
     datasets: []
   };
+
   userNames.forEach((userName) => {
     const userWithColor = users.find((u) => u.id === userName);
     chart = {
@@ -111,76 +132,9 @@ export const produceBarChartDataFromCommits = (
       datasets: [
         ...chart.datasets,
         {
-          data: commitsByUserAtDate[userName].slice(earliestDay),
+          data: objectsByUserAtDate[userName].slice(earliestDay),
           label: userWithColor?.alias ?? 'X',
           backgroundColor: userWithColor?.color ?? '#000'
-        }
-      ]
-    };
-  });
-  return chart;
-};
-
-export const produceBarChartDataFromIssues = (
-  data: DataObject[],
-  since: Date,
-  until: Date,
-  users: User[]
-) => {
-  const [issuesByUserAtDate, userNames, labels, earliestDay] =
-    produceChartDataFromDataObject(data, since, until);
-  let chart: ChartData = {
-    chartType: 'bar',
-    labels: labels,
-    datasets: []
-  };
-  userNames.forEach((userName) => {
-    const userWithColor = users.find((u) => u.id === userName);
-    chart = {
-      ...chart,
-      datasets: [
-        ...chart.datasets,
-        {
-          data: issuesByUserAtDate[userName].slice(earliestDay),
-          label: userWithColor?.alias ?? 'X',
-          backgroundColor: userWithColor?.color ?? '#000'
-        }
-      ]
-    };
-  });
-  return chart;
-};
-
-export const produceCumulativeChartDataFromIssues = (
-  data: DataObject[],
-  since: Date,
-  until: Date,
-  users: User[]
-) => {
-  const [commitsByUserAtDate, userNames, labels, earliestDay] =
-    produceChartDataFromDataObject(data, since, until);
-  let chart: ChartData = {
-    chartType: 'line',
-    labels: labels,
-    datasets: []
-  };
-  userNames.forEach((userName) => {
-    commitsByUserAtDate[userName] = commitsByUserAtDate[userName].map(
-      (
-        (sum) => (noCommits: number) =>
-          (sum += noCommits)
-      )(0)
-    ); // from https://stackoverflow.com/a/55261098/15324998
-    const userWithColor = users.find((u) => u.id === userName);
-    chart = {
-      ...chart,
-      datasets: [
-        ...chart.datasets,
-        {
-          data: commitsByUserAtDate[userName].slice(earliestDay),
-          label: userWithColor?.alias ?? 'X',
-          backgroundColor: userWithColor?.color ?? '#000',
-          borderColor: userWithColor?.color ?? '#000'
         }
       ]
     };

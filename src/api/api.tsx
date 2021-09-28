@@ -96,8 +96,8 @@ export const fetchIssues = (
         endpoint +
         '/issues?' +
         new URLSearchParams({
-          since: since.toISOString(),
-          until: until.toISOString(),
+          created_after: since.toISOString(),
+          created_before: until.toISOString(),
           per_page: '100',
           page: page
         }),
@@ -110,7 +110,6 @@ export const fetchIssues = (
         pageNum = res.headers.get('x-next-page');
         return res.json();
       })
-
       .then((issues) => {
         data = data.concat(issues);
         if (pageNum === null || pageNum === '') {

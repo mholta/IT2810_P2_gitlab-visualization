@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { motion, Variants } from 'framer-motion';
 import { DataObject, User } from '../../api/types';
 
-interface CommitCardProps {
+interface ListCardProps {
   commitData: DataObject;
   openOnClick: boolean;
   user: User | null;
 }
 
-interface CommitCardState {
+interface ListCardState {
   isOpen: boolean;
 }
 
-class CommitCard extends React.Component<CommitCardProps, CommitCardState> {
+class ListCard extends React.Component<ListCardProps, ListCardState> {
   state = { isOpen: false };
 
   handleClick = () => {
@@ -22,7 +22,7 @@ class CommitCard extends React.Component<CommitCardProps, CommitCardState> {
 
   render() {
     return (
-      <CommitCardWrapper
+      <ListCardWrapper
         onClick={this.handleClick}
         openOnClick={this.props.openOnClick}
       >
@@ -38,7 +38,7 @@ class CommitCard extends React.Component<CommitCardProps, CommitCardState> {
           <div>Date: {this.props.commitData.date.toLocaleDateString()}</div>
           {this.props.user && <div>User: {this.props.user.alias}</div>}
         </ExtraInfoWrapper>
-      </CommitCardWrapper>
+      </ListCardWrapper>
     );
   }
 }
@@ -52,7 +52,7 @@ const ExtraInfoWrapper = styled(motion.div)`
   overflow: hidden;
 `;
 
-const CommitCardWrapper = styled(motion.div)<Partial<CommitCardProps>>`
+const ListCardWrapper = styled(motion.div)<Partial<ListCardProps>>`
   padding: 2rem;
   border: 1px solid #eee;
   border-radius: 0.4rem;
@@ -74,4 +74,4 @@ const CommitCardWrapper = styled(motion.div)<Partial<CommitCardProps>>`
     `}
 `;
 
-export default CommitCard;
+export default ListCard;

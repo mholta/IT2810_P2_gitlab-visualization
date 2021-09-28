@@ -40,9 +40,10 @@ const textVariants: Variants = {
   show: {
     width: 'auto',
     marginLeft: '0.4rem',
-    marginRight: '0.4rem'
+    marginRight: '0.4rem',
+    opacity: 1
   },
-  hide: { width: 0, marginLeft: 0, marginRight: 0 }
+  hide: { width: 0, marginLeft: 0, marginRight: 0, opacity: 0 }
 };
 
 const Button = styled(MuiButton)`
