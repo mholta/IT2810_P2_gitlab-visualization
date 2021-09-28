@@ -45,7 +45,7 @@ const MainContentContainer = () => {
     },
     setUsersState
   } = useContext(FilterContext);
-
+  // console.log(users);
   const [chartData, setChartData] = useState<ChartData>({
     chartType: 'bar',
     labels: [],
@@ -56,10 +56,6 @@ const MainContentContainer = () => {
   useEffect(() => {
     apiSwitch(since, until, category, users).then((apiResult: any) => {
       if (apiResult.loadingState === LoadingState.ERROR) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('projectID');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('projectID');
         history.replace({
           pathname: '/login',
           state: 'There was an error with the projectID or the Access-token'
@@ -68,6 +64,7 @@ const MainContentContainer = () => {
         setData(apiResult.data);
         setLoadingState(apiResult.loadingState);
         setUsersState(apiResult.updatedUsers);
+        console.log('users', users);
       }
     });
     // eslint-disable-next-line

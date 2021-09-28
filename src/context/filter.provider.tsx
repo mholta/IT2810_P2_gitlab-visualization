@@ -1,5 +1,6 @@
 import { ReactChild, useEffect, useState } from 'react';
 import { User } from '../api/types';
+import { getDateBeforeToday } from '../utils/date';
 import { FilterContext } from './filter.context';
 import {
   DataCategory,
@@ -14,7 +15,6 @@ interface ContextProviderProps {
 
 export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   const [state, setState] = useState<FilterObject>(initialFilterObject);
-
   const updateLocalStorage = (state: FilterObject) => {
     localStorage.setItem('category-state', JSON.stringify(state.category));
   };
@@ -43,12 +43,21 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   const setListOrGraph = (listOrGraph: ListOrGraph) => {
     setState({ ...state, listOrGraph: listOrGraph });
   };
+  const reset = () => {
+    setState({
+      category: DataCategory.COMMITS,
+      timeSpan: { since: getDateBeforeToday(14), until: getDateBeforeToday() },
+      listOrGraph: ListOrGraph.LIST,
+      users: []
+    });
+  };
   const actions = {
     setSinceDate,
     setUntilDate,
     setUsersState,
     setCategory,
-    setListOrGraph
+    setListOrGraph,
+    reset
   };
 
   return (

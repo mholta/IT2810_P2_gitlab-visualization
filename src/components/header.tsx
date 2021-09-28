@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import HamburgerButton from './hamburgerButton';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+import { FilterContext } from '../context/filter.context';
+import {
+  DataCategory,
+  initialFilterObject,
+  ListOrGraph
+} from '../context/filter.initialValue';
+import { getDateBeforeToday } from '../utils/date';
 
 /**
  * Page header containing hamburger button and log out button
@@ -12,10 +19,6 @@ const Header = () => {
 
   // Removes browser storage to log out
   const logOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('projectID');
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('projectID');
     history.replace('/login');
   };
 

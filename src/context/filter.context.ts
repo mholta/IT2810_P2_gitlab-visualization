@@ -13,7 +13,8 @@ export const FilterContext = createContext<FilterContextState>({
   setUntilDate: () => {},
   setUsersState: () => {},
   setCategory: () => {},
-  setListOrGraph: () => {}
+  setListOrGraph: () => {},
+  reset: () => {},
 });
 
 export interface FilterContextState {
@@ -23,4 +24,5 @@ export interface FilterContextState {
   setUsersState: (userList: User[]) => void;
   setCategory: (category: DataCategory) => void;
   setListOrGraph: (listOrGraph: ListOrGraph) => void;
+  reset: () => void;
 }

@@ -19,7 +19,7 @@ const ShowUsers = () => {
     setUsersState(modifiedUsers);
   };
 
-  console.log(users);
+  // console.log(users);
 
   return (
     <ShowUsersWrapper>

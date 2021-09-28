@@ -8,17 +8,44 @@ import {
   Typography,
   TextField
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
+import { FilterContext } from '../context/filter.context';
+import { DataCategory, ListOrGraph } from '../context/filter.initialValue';
+import { getDateBeforeToday } from '../utils/date';
 
 /**
  * Login page. User submits ProjectID and Access Token to display data from their GitLab project.
  */
 const Login = () => {
   const history = useHistory();
+  const {
+    state: { users, category },
+    reset
+  } = useContext(FilterContext);
+  console.log(users, category);
+
+  useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('projectID');
+    localStorage.removeItem('anonymize');
+    localStorage.removeItem('category-state');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('projectID');
+    sessionStorage.removeItem('anonymize');
+    sessionStorage.removeItem('time-span-state');
+    reset();
+    console.log('login', users, category);
+  }, []);
   const location: any = useLocation();
   const [remember, setRemember] = useState(false);
-
+  const [anonymize, setAnonymize] = useState(false);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -31,10 +58,12 @@ const Login = () => {
     if (remember && projectId && token) {
       localStorage.setItem('projectID', projectId);
       localStorage.setItem('token', token);
+      localStorage.setItem('anonymize', anonymize.toString());
       history.replace('/');
     } else if (!remember && projectId && token) {
       sessionStorage.setItem('projectID', projectId);
       sessionStorage.setItem('token', token);
+      sessionStorage.setItem('anonymize', anonymize.toString());
       history.replace('/');
     }
   };
@@ -88,7 +117,25 @@ const Login = () => {
             }
             label="Remember me"
           />
-          <Button type="submit" fullWidth variant="contained" color="primary">
+          <FormControlLabel
+            control={
+              <Checkbox
+                value="anonymize"
+                color="primary"
+                id="anonymize"
+                checked={anonymize}
+                onChange={() => setAnonymize(!anonymize)}
+              />
+            }
+            label="Anonymize userdata"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            // sx={{ mt: 3, mb: 2 }}
+          >
             Use this repo
           </Button>
         </Box>
