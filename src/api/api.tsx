@@ -1,33 +1,28 @@
-const b = [
-  'zzN9Ms1GcC-mxfQKZbu_',
-  'YYSpNGoLnbPKsQxZr6Rs',
-  '8z2gZzaAC8mb1qLwgA2s',
-  'UxjWaZ5gLHyQBGw_3_jx',
-  'LJuzVUq5XJTK1P3i5V5A',
-  'zKPYXxMgutMm5oXDf1sc'
-];
-// const a = b[Math.floor(Math.random() * 6)];
-
-// const endpoint = 'https://gitlab.stud.idi.ntnu.no/api/v4/projects/11839/';
-
 let endpoint = '';
 let endpointToken = '';
 let header: any;
+
+/**
+ * Updates endpoint with user specified ProjectID.
+ */
 const updateEndpoint = () => {
   const projectIdLocal = localStorage.getItem('projectID');
   const tokenLocal = localStorage.getItem('token');
   const projectIdSession = sessionStorage.getItem('projectID');
   const tokenSession = sessionStorage.getItem('token');
+
   if (projectIdLocal) {
     endpoint = projectIdLocal;
   } else if (projectIdSession) {
     endpoint = projectIdSession;
   }
+
   if (tokenLocal) {
     endpointToken = tokenLocal;
   } else if (tokenSession) {
     endpointToken = tokenSession;
   }
+
   header = {
     method: 'GET',
     headers: new Headers({
@@ -36,6 +31,10 @@ const updateEndpoint = () => {
     })
   };
 };
+
+/**
+ * Fetch commits from GitLab with supplied filters.
+ */
 export const fetchCommits = (
   since: Date,
   until: Date,
@@ -44,9 +43,9 @@ export const fetchCommits = (
 ) => {
   let pageNum: string | null;
   updateEndpoint();
+
   return new Promise<any>((resolve, reject) => {
     fetch(
-      // 'https://gitlab.stud.idi.ntnu.no/api/v4/projects/11839' +
       'https://gitlab.stud.idi.ntnu.no/api/v4/projects/' +
         endpoint +
         '/repository/commits?' +
@@ -62,17 +61,18 @@ export const fetchCommits = (
         if (!res.ok) {
           throw new Error('Wrong token or project ID');
         }
+
         pageNum = res.headers.get('x-next-page');
         return res.json();
       })
       .then((commits) => {
         data = data.concat(commits);
+
+        // Recursively fetch more commits if we are not on the last page
         if (pageNum === null || pageNum === '') {
           return data;
         } else {
-          // return data;
           return fetchCommits(since, until, data, pageNum);
-          //         fetchCommits(since, until, data, pageNum);
         }
       })
       .then((commits) => resolve(commits))
@@ -82,6 +82,9 @@ export const fetchCommits = (
   });
 };
 
+/**
+ * Fetch issues from GitLab with supplied filters.
+ */
 export const fetchIssues = (
   since: Date,
   until: Date,
@@ -90,6 +93,7 @@ export const fetchIssues = (
 ) => {
   let pageNum: string | null;
   updateEndpoint();
+
   return new Promise<any>((resolve, reject) => {
     fetch(
       'https://gitlab.stud.idi.ntnu.no/api/v4/projects/' +
@@ -107,11 +111,14 @@ export const fetchIssues = (
         if (!res.ok) {
           throw new Error('Wrong token or project ID');
         }
+
         pageNum = res.headers.get('x-next-page');
         return res.json();
       })
       .then((issues) => {
         data = data.concat(issues);
+
+        // Recursively fetch more issues if we are not on the last page
         if (pageNum === null || pageNum === '') {
           return data;
         } else {

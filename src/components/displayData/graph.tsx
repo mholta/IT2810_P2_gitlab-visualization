@@ -1,7 +1,5 @@
-import React from 'react';
-// import ReactFrappeChart from 'react-frappe-charts';
 import { Line, Bar } from 'react-chartjs-2';
-// import { Chart } from 'frappe-charts/dist/frappe-charts.min.esm';
+
 export type ChartType =
   | 'line'
   | 'bar'
@@ -30,6 +28,9 @@ interface GraphProps {
   data: ChartData;
 }
 
+/**
+ * Displays data as a chart.
+ */
 const Graph = ({ data }: GraphProps) => {
   switch (data.chartType) {
     case 'line': {

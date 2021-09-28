@@ -2,6 +2,9 @@ import Header from '../components/header';
 import MainContentContainer from '../components/mainContentContainer';
 import SideBar from '../components/sidebar';
 
+/**
+ * Main page.
+ */
 const MainPage = () => {
   return (
     <div>

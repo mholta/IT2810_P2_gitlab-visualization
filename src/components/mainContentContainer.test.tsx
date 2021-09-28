@@ -1,13 +1,13 @@
 import ReactDOM from 'react-dom';
-import apiSwitch, { LoadingState, User } from '../api/useApi';
+import apiSwitch, { LoadingState } from '../api/useApi';
 import '@testing-library/jest-dom/extend-expect';
-import { CommitData } from './commits/commits';
 import MainContentContainer from './mainContentContainer';
 import { FilterContext } from '../context/filter.context';
 import {
   initialFilterObject,
   ListOrGraph
 } from '../context/filter.initialValue';
+import { User } from '../api/types';
 
 jest.mock('../api/useApi');
 
@@ -19,7 +19,7 @@ const users: User[] = [
   { alias: 'User 3', id: 'Test 3', show: true, color: '#0f7292' }
 ];
 
-const commits: CommitData[] = [
+const commits = [
   {
     id: 'ed899a2f4b50b4370feeea94676502b42383c746',
     short_id: 'ed899a2f4b5',
@@ -52,7 +52,9 @@ const commits: CommitData[] = [
       'https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
   }
 ];
+
 let loadingState: LoadingState, container: HTMLDivElement, data: any;
+
 beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -61,11 +63,13 @@ beforeEach(() => {
 afterEach(() => {
   document.body.removeChild(container);
 });
+
 describe('mainContentContainer renders correctly', () => {
   test('List of commits is shown', () => {
-    // tests if it shows list and not graph
+    // Tests if it shows list and not graph
     loadingState = LoadingState.LOADED;
     data = commits;
+
     mockUseAPI.mockImplementation(() => {
       return {
         data,
@@ -73,6 +77,7 @@ describe('mainContentContainer renders correctly', () => {
         loadingState
       };
     });
+
     ReactDOM.render(<MainContentContainer />, container);
     const graph = container.querySelector('#graph');
     expect(graph).not.toBeInTheDocument();
@@ -81,9 +86,10 @@ describe('mainContentContainer renders correctly', () => {
   });
 
   test('Graph of commits is shown', () => {
-    // tests if it shows graph and not list
+    // Tests if it shows graph and not list
     loadingState = LoadingState.LOADED;
     data = commits;
+
     mockUseAPI.mockImplementation(() => {
       return {
         data,
@@ -91,10 +97,12 @@ describe('mainContentContainer renders correctly', () => {
         loadingState
       };
     });
+
     const state = initialFilterObject;
     state.listOrGraph = ListOrGraph.GRAPH;
+
     ReactDOM.render(
-      // to be able to decide initial state of context
+      // To be able to decide initial state of context
       <FilterContext.Provider
         value={{
           state,

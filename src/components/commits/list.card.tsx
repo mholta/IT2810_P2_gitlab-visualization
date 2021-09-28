@@ -13,6 +13,9 @@ interface ListCardState {
   isOpen: boolean;
 }
 
+/**
+ * Displays information about a single data object.
+ */
 class ListCard extends React.Component<ListCardProps, ListCardState> {
   state = { isOpen: false };
 

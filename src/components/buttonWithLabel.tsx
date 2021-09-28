@@ -9,6 +9,9 @@ interface IconButtonWithLabelProps {
   icon: React.ReactNode;
 }
 
+/**
+ * Button with icon and animated text on hover.
+ */
 const IconButtonWithLabel = ({
   label,
   onClick,

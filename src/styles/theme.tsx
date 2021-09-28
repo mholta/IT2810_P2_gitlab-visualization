@@ -14,7 +14,6 @@ export const theme = createTheme({
     },
     text: {
       primary: '#000',
-      // primary: '#fef2f2',
       secondary: 'lightgrey'
     }
   },

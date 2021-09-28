@@ -3,12 +3,16 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { FilterContext } from '../../context/filter.context';
 
+/**
+ * Checkboxes for showing or hiding a user's contributions.
+ */
 const ShowUsers = () => {
   const {
     state: { users },
     setUsersState
   } = useContext(FilterContext);
 
+  // Update filter context with the toggled user
   const toggleShowUser = (index: number) => {
     const modifiedUsers = users;
     modifiedUsers[index].show = !modifiedUsers[index].show;

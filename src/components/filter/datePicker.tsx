@@ -12,6 +12,9 @@ interface DatePickerProps {
   enableClearButton?: boolean;
 }
 
+/**
+ * Calendar element for selecting dates.
+ */
 const DatePicker = ({
   onChange,
   value,

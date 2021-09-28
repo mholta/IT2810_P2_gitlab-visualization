@@ -4,6 +4,9 @@ import { LayoutContext } from '../context/layout.context';
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconButtonWithLabel from './buttonWithLabel';
 
+/**
+ * Button in top left corner that opens the sidebar.
+ */
 const HamburgerButton = () => {
   const { setMenuOpen } = useContext(LayoutContext);
 

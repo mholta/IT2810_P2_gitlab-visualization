@@ -4,6 +4,9 @@ import CategorySelect from './categorySelect';
 import ShowUsers from './showUsers';
 import ViewTypeToggle from './viewTypeToggle';
 
+/**
+ * Filter for deciding what data should be fetched from GitLab.
+ */
 const Filter = () => {
   return (
     <FilterWrapper>

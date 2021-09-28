@@ -10,6 +10,9 @@ import styled from 'styled-components';
 import Filter from './filter/filter';
 import { LayoutContext } from '../context/layout.context';
 
+/**
+ * Sidebar on left side of screen which contains data filter.
+ */
 const SideBar = () => {
   const { state, setMenuOpen } = useContext(LayoutContext);
 
@@ -45,6 +48,9 @@ const SideBar = () => {
   );
 };
 
+/**
+ * Set how much of screen sidebar should cover depending on size of screen.
+ */
 const GridWithMediaQueries = withTheme(styled(Grid)`
   padding: 1rem;
   ${(props) => props.theme.breakpoints.up('xs')} {

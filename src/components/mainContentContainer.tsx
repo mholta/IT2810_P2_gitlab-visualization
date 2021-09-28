@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container } from '@material-ui/core';
-import TopBar from './topBar';
 import { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../context/filter.context';
 import apiSwitch, { LoadingState } from '../api/useApi';
@@ -15,8 +14,13 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { DataObject } from '../api/types';
 
+/**
+ * Main container includes a scalable image and .
+ */
 const MainContentContainer = () => {
   const history = useHistory();
+
+  // Go to login screen if there is ProjectID and access token is not stored in browser
   if (
     !(
       (localStorage.getItem('projectID') !== null ||
@@ -41,13 +45,14 @@ const MainContentContainer = () => {
     },
     setUsersState
   } = useContext(FilterContext);
-  console.log(users);
+
   const [chartData, setChartData] = useState<ChartData>({
     chartType: 'bar',
     labels: [],
     datasets: []
   });
 
+  // Gets data from API when filter is updated
   useEffect(() => {
     apiSwitch(since, until, category, users).then((apiResult: any) => {
       if (apiResult.loadingState === LoadingState.ERROR) {
@@ -68,10 +73,7 @@ const MainContentContainer = () => {
     // eslint-disable-next-line
   }, [since, until, category, users]);
 
-  useEffect(() => {
-    // data, category
-  }, [since, until, listOrGraph]);
-
+  // Generate chart data when data or filters change
   useEffect(() => {
     if (listOrGraph === ListOrGraph.GRAPH) {
       if (category === DataCategory.COMMITS) {
@@ -121,8 +123,6 @@ const MainContentContainer = () => {
         )}
       </div>
       {/* END */}
-
-      <TopBar />
     </Container>
   );
 };

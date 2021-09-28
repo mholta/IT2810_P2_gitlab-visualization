@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme, withTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import ListCard from './list.card';
@@ -6,22 +6,20 @@ import { DataObject, User } from '../../api/types';
 import { ViewStreamOutlined, ViewWeekOutlined } from '@material-ui/icons';
 import IconButtonWithLabel from '../buttonWithLabel';
 import { useWindowWidth } from '@react-hook/window-size';
-import { FilterContext } from '../../context/filter.context';
 
 interface ListProps {
   commits: DataObject[];
   users: User[];
 }
 
+/**
+ * Displays a list of data objects.
+ */
 const List = ({ commits, users }: ListProps) => {
   const [showColumnToggle, setShowToggleButton] = useState<boolean>(false);
   const [showColumns, setShowColumns] = useState<boolean>(true);
 
   const width: number = useWindowWidth();
-
-  const {
-    state: { category }
-  } = useContext(FilterContext);
 
   const {
     breakpoints: {

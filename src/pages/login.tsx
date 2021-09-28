@@ -8,20 +8,17 @@ import {
   Typography,
   TextField
 } from '@material-ui/core';
-import React, { FunctionComponent, useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
 
-// type loginProps = {
-//   message?: string;
-// } & RouteComponentProps;
-
-// const Login: FunctionComponent<loginProps> = ({ message }) => {
+/**
+ * Login page. User submits ProjectID and Access Token to display data from their GitLab project.
+ */
 const Login = () => {
   const history = useHistory();
   const location: any = useLocation();
-  console.log(location.state);
   const [remember, setRemember] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -29,7 +26,8 @@ const Login = () => {
     // eslint-disable-next-line no-console
     const projectId = data.get('projectId')?.toString();
     const token = data.get('token')?.toString();
-    console.log(projectId);
+
+    // Store project information in browser storage
     if (remember && projectId && token) {
       localStorage.setItem('projectID', projectId);
       localStorage.setItem('token', token);
@@ -40,6 +38,7 @@ const Login = () => {
       history.replace('/');
     }
   };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -89,13 +88,7 @@ const Login = () => {
             }
             label="Remember me"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            // sx={{ mt: 3, mb: 2 }}
-          >
+          <Button type="submit" fullWidth variant="contained" color="primary">
             Use this repo
           </Button>
         </Box>

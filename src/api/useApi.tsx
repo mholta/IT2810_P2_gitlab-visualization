@@ -9,6 +9,7 @@ export enum LoadingState {
   LOADED = 'loaded'
 }
 
+// Uses API to get data and filter it by users.
 const apiSwitch = async (
   since: Date,
   until: Date,

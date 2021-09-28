@@ -3,12 +3,16 @@ import React, { useContext } from 'react';
 import { FilterContext } from '../../context/filter.context';
 import { DataCategory } from '../../context/filter.initialValue';
 
+/**
+ * Dropdown menu for selecting which DataCategory should be fetched.
+ */
 const CategorySelect = () => {
   const {
     state: { category },
     setCategory
   } = useContext(FilterContext);
 
+  // Update filter context with selected category
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setCategory(event.target.value as DataCategory);
   };
