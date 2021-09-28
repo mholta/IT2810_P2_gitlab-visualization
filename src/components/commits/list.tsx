@@ -50,11 +50,20 @@ const List = ({ commits, users }: ListProps) => {
       ? users[users.indexOf(user)]
       : null;
 
+  // make table-bars stay at right place
+  const scrollingElement = document.getElementById('scroll');
+  const backgroundElement = document.getElementById('background');
+  if (scrollingElement && backgroundElement) {
+    scrollingElement.addEventListener('scroll', () => {
+      backgroundElement.style.left = -scrollingElement.scrollLeft + 'px';
+    });
+  }
+
   return (
     <MainWrapper showColumns={showColumns}>
-      <InnerScrollWrapper>
-        <TopBarWrapper>
-          <ToggleButtonWrapper>
+      <InnerScrollWrapper id="scroll">
+        <TopBarWrapper columns={columns} showColumns={showColumns}>
+          <ToggleButtonWrapper showColumns={showColumns}>
             {showColumnToggle && (
               <IconButtonWithLabel
                 onClick={() => setShowColumns(!showColumns)}
@@ -67,16 +76,24 @@ const List = ({ commits, users }: ListProps) => {
           </ToggleButtonWrapper>
           <ColumnTitlesWrapper columns={columns} showColumns={showColumns}>
             {showColumns ? (
-              users.map((user, index) => (
-                <ColumnTitle key={'c-user-' + index}>{user.alias}</ColumnTitle>
-              ))
+              users
+                .filter((c) => c.show)
+                .map((user, index) => (
+                  <ColumnTitle key={'c-user-' + index}>
+                    {user.alias}
+                  </ColumnTitle>
+                ))
             ) : (
               <ColumnTitle>Alle commits</ColumnTitle>
             )}
           </ColumnTitlesWrapper>
         </TopBarWrapper>
 
-        <BackgroundWrapper>
+        <BackgroundWrapper
+          id="background"
+          showColumns={showColumns}
+          columns={columns}
+        >
           {showColumns &&
             Array.from(Array(columns + 1)).map((e, index) => (
               <span key={'span' + index} />
@@ -84,21 +101,23 @@ const List = ({ commits, users }: ListProps) => {
         </BackgroundWrapper>
 
         <ListWrapper columns={columns} showColumns={showColumns}>
-          {commits.map((commitData, index) => (
-            <CardWrapper
-              columns={columns}
-              showColumns={showColumns}
-              currentColumn={getColumnNum(commitData.user)}
-              key={'commit-wrapper-' + index}
-            >
-              <ListCard
-                commitData={commitData}
-                key={'commit-' + index}
-                openOnClick={!showColumns}
-                user={commitData.user}
-              />
-            </CardWrapper>
-          ))}
+          {commits
+            .filter((c) => c.user.show)
+            .map((commitData, index) => (
+              <CardWrapper
+                columns={columns}
+                showColumns={showColumns}
+                currentColumn={getColumnNum(commitData.user)}
+                key={'commit-wrapper-' + index}
+              >
+                <ListCard
+                  commitData={commitData}
+                  key={'commit-' + index}
+                  openOnClick={!showColumns}
+                  user={commitData.user}
+                />
+              </CardWrapper>
+            ))}
         </ListWrapper>
       </InnerScrollWrapper>
     </MainWrapper>
@@ -114,15 +133,16 @@ interface CommitCardWrapperProps extends ColumnsProps {
   currentColumn: number;
 }
 
-const ToggleButtonWrapper = styled.div`
+const ToggleButtonWrapper = styled.div<{ showColumns: boolean }>`
   position: absolute;
-  top: 1rem;
-  left: 3%;
+  top: ${(props) => (props.showColumns ? '1rem' : '0')};
+  left: 1rem;
+
   // position: sticky;
   z-index: 10;
 `;
 
-const CardWrapper = styled.div<CommitCardWrapperProps>`
+const CardWrapper = withTheme(styled.div<CommitCardWrapperProps>`
   ${(props) =>
     props.showColumns
       ? props.currentColumn
@@ -143,10 +163,10 @@ const CardWrapper = styled.div<CommitCardWrapperProps>`
   );
   gap: 0 var(--padding);
   // min-width: 50rem;
-`;
+`);
 
 const ListWrapper = styled.div<ColumnsProps>`
-  padding: var(--padding);
+  padding: 0 calc(var(--padding) / 2);
   position: relative;
   z-index: 2;
   margin-top: 1rem;
@@ -155,6 +175,8 @@ const ListWrapper = styled.div<ColumnsProps>`
   grid-template-columns: repeat(${(props) => props.columns}, 1fr);
   gap: 0 var(--padding);
   padding: 0 calc(var(--padding) / 2);
+  width: calc(${(props) => props.columns}*20rem); // width for columns
+  ${(props) => !props.showColumns && 'width: unset;'}//width for list
 `;
 
 const ColumnTitle = withTheme(styled.h2`
@@ -167,15 +189,15 @@ const ColumnTitlesWrapper = withTheme(styled.div<ColumnsProps>`
   gap: 1rem var(--padding);
   padding: 0 calc(var(--padding) / 2);
   border-bottom: 2px solid ${(props) => props.theme.palette.grey[200]};
-  // position: sticky;
-  // top: 0;
-  // z-index: 50;
 `);
-const TopBarWrapper = styled.div`
+
+const TopBarWrapper = styled.div<ColumnsProps>`
   position: sticky;
   z-index: 10;
   background-color: white;
   top: 0;
+  width: calc((${(props) => props.columns}*20rem) + var(--padding));
+  ${(props) => !props.showColumns && 'width: unset;'}
 `;
 
 const InnerScrollWrapper = styled.div`
@@ -187,18 +209,16 @@ const InnerScrollWrapper = styled.div`
 
 const MainWrapper = withTheme(styled.div<{ showColumns: boolean }>`
   border: 2px solid ${(props) => props.theme.palette.grey[200]};
+  max-width: 100%;
   border-radius: 1rem;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   z-index: 15;
-  // margin-top: 2rem;
-
   --padding: 2rem;
-
-  ${(props) => props.showColumns && 'min-width: 60rem;'}
 `);
 
-const BackgroundWrapper = withTheme(styled.div`
+const BackgroundWrapper = withTheme(styled.div<ColumnsProps>`
   position: absolute;
   top: 0;
   width: 0;
@@ -207,12 +227,17 @@ const BackgroundWrapper = withTheme(styled.div`
   display: flex;
   justify-content: space-between;
   pointer-events: none;
-  z-index: 11;
+  z-index: 15;
+  width: calc(
+    (${(props) => props.columns}*20rem) + var(--padding)
+  ); // width of x times 20rem + the padding
+  ${(props) => !props.showColumns && 'width: unset;'}
 
   & > span {
     width: 2px;
     background-color: ${(props) => props.theme.palette.grey[200]};
     pointer-events: none;
+    height: 100%;
   }
 
   & :first-child,
