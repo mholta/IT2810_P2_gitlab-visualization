@@ -58,7 +58,7 @@ const List = ({ commits, users }: ListProps) => {
   }
 
   return (
-    <MainWrapper showColumns={showColumns}>
+    <MainWrapper showColumns={showColumns} columns={columns}>
       <InnerScrollWrapper id="scroll">
         <TopBarWrapper columns={columns} showColumns={showColumns}>
           <ToggleButtonWrapper showColumns={showColumns}>
@@ -164,7 +164,7 @@ const CardWrapper = withTheme(styled.div<CommitCardWrapperProps>`
 `);
 
 const ListWrapper = styled.div<ColumnsProps>`
-  padding: 0 calc(var(--padding) / 2);
+  // margin: 0 calc(-var(--padding) / 2);
   position: relative;
   z-index: 2;
   margin-top: 1rem;
@@ -172,8 +172,11 @@ const ListWrapper = styled.div<ColumnsProps>`
   display: grid;
   grid-template-columns: repeat(${(props) => props.columns}, 1fr);
   gap: 0 var(--padding);
+
   padding: 0 calc(var(--padding) / 2);
-  width: calc(${(props) => props.columns}*20rem); // width for columns
+  --minimum: calc(100% - var(--padding));
+
+  width: max(var(--minimum), var(--maximum));
   ${(props) => !props.showColumns && 'width: unset;'}//width for list
 `;
 
@@ -194,7 +197,8 @@ const TopBarWrapper = styled.div<ColumnsProps>`
   z-index: 10;
   background-color: white;
   top: 0;
-  width: calc((${(props) => props.columns}*20rem) + var(--padding));
+  min-width: 100%;
+  width: calc(var(--maximum) + var(--padding));
   ${(props) => !props.showColumns && 'width: unset;'}
 `;
 
@@ -205,14 +209,18 @@ const InnerScrollWrapper = styled.div`
   max-height: 90vh;
 `;
 
-const MainWrapper = withTheme(styled.div<{ showColumns: boolean }>`
+const MainWrapper = withTheme(styled.div<ColumnsProps>`
   border: 2px solid ${(props) => props.theme.palette.grey[200]};
-  max-width: 100%;
+  max-width: min(100%, var(--maximum));
+  --lg: ${(props) => props.theme.breakpoints.values['lg']}px;
+  ${(props) => !props.showColumns && 'max-width: var(--lg)'};
   border-radius: 1rem;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
+  margin: auto;
   z-index: 15;
+  --maximum: calc(${(props) => props.columns}*20rem);
   --padding: 2rem;
 `);
 
@@ -226,6 +234,7 @@ const BackgroundWrapper = withTheme(styled.div<ColumnsProps>`
   justify-content: space-between;
   pointer-events: none;
   z-index: 15;
+  min-width: 100%;
   width: calc(
     (${(props) => props.columns}*20rem) + var(--padding)
   ); // width of x times 20rem + the padding

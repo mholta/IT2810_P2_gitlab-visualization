@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container } from '@material-ui/core';
 import { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../context/filter.context';
 import apiSwitch, { LoadingState } from '../api/useApi';
@@ -13,6 +12,7 @@ import {
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { DataObject } from '../api/types';
+import { withTheme } from '@material-ui/core';
 
 /**
  * Main container includes a scalable image and .
@@ -64,7 +64,7 @@ const MainContentContainer = () => {
         setData(apiResult.data);
         setLoadingState(apiResult.loadingState);
         setUsersState(apiResult.updatedUsers);
-        console.log('users', users);
+        // console.log('users', users);
       }
     });
     // eslint-disable-next-line
@@ -72,6 +72,7 @@ const MainContentContainer = () => {
 
   // Generate chart data when data or filters change
   useEffect(() => {
+    // console.log(data, since, until, users);
     if (listOrGraph === ListOrGraph.GRAPH) {
       if (category === DataCategory.COMMITS) {
         setChartData(
@@ -112,9 +113,9 @@ const MainContentContainer = () => {
                 <List commits={data} users={users} />
               </div>
             ) : (
-              <div id="graph">
+              <GraphWrapper id="graph">
                 <Graph data={chartData} />
-              </div>
+              </GraphWrapper>
             )}
           </div>
         )}
@@ -124,8 +125,21 @@ const MainContentContainer = () => {
   );
 };
 
-const ScalableImage = styled.img`
+const ScalableImage = withTheme(styled.img`
+  ${(props) => props.theme.breakpoints.down('md')} {
+    width: 100%;
+  }
+  ${(props) => props.theme.breakpoints.up('md')} {
+    width: ${(props) => props.theme.breakpoints.values['md']}px;
+  }
+`);
+
+const Container = styled.div`
+  padding: 1rem;
+  text-align: center;
   width: 100%;
 `;
-
+const GraphWrapper = styled.div`
+  max-height: 80vh;
+`;
 export default MainContentContainer;

@@ -8,10 +8,14 @@ import {
   ListOrGraph
 } from '../context/filter.initialValue';
 import { DataObject, User } from '../api/types';
+import { act } from 'react-dom/test-utils';
+import Graph from './displayData/graph';
 
 jest.mock('../api/useApi');
+jest.mock('./displayData/graph');
 
-const mockUseAPI = apiSwitch as jest.Mock<any>;
+const mockApiSwitch = apiSwitch as jest.Mock<any>;
+const mockGraph = Graph as jest.Mock<any>;
 // https://klzns.github.io/how-to-use-type-script-and-jest-mocks
 const users: User[] = [
   { alias: 'User 1', id: 'Test 1', show: true, color: '#4d56e2' },
@@ -45,6 +49,9 @@ const commits: DataObject[] = [
 let loadingState: LoadingState, container: HTMLDivElement, data: any;
 
 beforeEach(() => {
+  localStorage.setItem('projectID', 'test');
+  localStorage.setItem('token', 'test');
+  localStorage.setItem('anonymize', 'true');
   container = document.createElement('div');
   document.body.appendChild(container);
 });
@@ -54,60 +61,64 @@ afterEach(() => {
 });
 
 describe('mainContentContainer renders correctly', () => {
-  test('List of commits is shown', () => {
-    // Tests if it shows list and not graph
+  test('List of commits is shown', async () => {
+    // tests if it shows list and not graph
     loadingState = LoadingState.LOADED;
     data = commits;
-
-    mockUseAPI.mockImplementation(() => {
-      return {
-        data,
-        users,
-        loadingState
-      };
+    mockApiSwitch.mockImplementation(
+      (): Promise<any> =>
+        Promise.resolve({
+          data,
+          updatedUsers: users,
+          loadingState
+        })
+    );
+    await act(async () => {
+      ReactDOM.render(<MainContentContainer />, container);
     });
-
-    ReactDOM.render(<MainContentContainer />, container);
     const graph = container.querySelector('#graph');
     expect(graph).not.toBeInTheDocument();
     const commitList = container.querySelector('#listOfCommits');
     expect(commitList).toBeInTheDocument();
   });
 
-  test('Graph of commits is shown', () => {
-    // Tests if it shows graph and not list
+  test('Graph of commits is shown', async () => {
+    // tests if it shows graph and not list
     loadingState = LoadingState.LOADED;
     data = commits;
-
-    mockUseAPI.mockImplementation(() => {
-      return {
-        data,
-        users,
-        loadingState
-      };
-    });
-
+    mockApiSwitch.mockImplementation(
+      (): Promise<any> =>
+        Promise.resolve({
+          data,
+          updatedUsers: users,
+          loadingState
+        })
+    );
+    mockGraph.mockImplementation((): null => null);
     const state = initialFilterObject;
     state.listOrGraph = ListOrGraph.GRAPH;
-
-    ReactDOM.render(
-      // To be able to decide initial state of context
-      <FilterContext.Provider
-        value={{
-          state,
-          setCategory: () => {},
-          setListOrGraph: () => {},
-          setSinceDate: () => {},
-          setUntilDate: () => {},
-          setUsersState: () => {},
-          reset: () => {}
-        }}
-      >
-        <MainContentContainer />
-      </FilterContext.Provider>,
-      container
-    );
-
+    state.users = users;
+    state.timeSpan.since = new Date('2012-09-18T11:50:22+03:00');
+    state.timeSpan.since = new Date('2012-09-21T11:50:22+03:00');
+    await act(async () => {
+      ReactDOM.render(
+        // to be able to decide initial state of context
+        <FilterContext.Provider
+          value={{
+            state,
+            setCategory: () => {},
+            setListOrGraph: () => {},
+            setSinceDate: () => {},
+            setUntilDate: () => {},
+            setUsersState: () => {},
+            reset: () => {}
+          }}
+        >
+          <MainContentContainer />
+        </FilterContext.Provider>,
+        container
+      );
+    });
     const graph = container.querySelector('#graph');
     expect(graph).toBeInTheDocument();
     const commitList = container.querySelector('#listOfCommits');
