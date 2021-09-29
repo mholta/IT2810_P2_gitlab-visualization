@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
+import { FilterContext } from '../../context/filter.context';
 
 export type ChartType =
   | 'line'
@@ -32,12 +34,22 @@ interface GraphProps {
  * Displays data as a chart.
  */
 const Graph = ({ data }: GraphProps) => {
+  const {
+    state: { users }
+  } = useContext(FilterContext);
+
+  // Hide or show user
+  const displayData = { ...data };
+  displayData.datasets = data.datasets.filter(
+    (d: any) => users[users.map((u) => u.alias).indexOf(d.label)].show
+  );
+
   switch (data.chartType) {
     case 'line': {
-      return <Line data={data} />;
+      return <Line data={displayData} />;
     }
     case 'bar': {
-      return <Bar data={data} />;
+      return <Bar data={displayData} />;
     }
     default: {
       return <div></div>;

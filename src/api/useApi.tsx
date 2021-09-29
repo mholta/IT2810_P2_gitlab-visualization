@@ -9,7 +9,7 @@ export enum LoadingState {
   LOADED = 'loaded'
 }
 
-// Uses API to get data and filter it by users.
+// Uses API to get data and add newly discovered users.
 const apiSwitch = async (
   since: Date,
   until: Date,
@@ -34,7 +34,7 @@ const apiSwitch = async (
               user: users[users.map((u) => u.id).indexOf(commit.author_name)]
             };
           })
-          .filter((commit: DataObject) => commit.user.show);
+          .filter((commit: DataObject) => commit.user);
 
         return {
           data: commits,
@@ -63,7 +63,7 @@ const apiSwitch = async (
               ]
             })
           )
-          .filter((issue: DataObject) => issue.user?.show);
+          .filter((issue: DataObject) => issue.user);
 
         return {
           data: issues,

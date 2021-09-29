@@ -1,5 +1,8 @@
 import { User } from '../api/types';
 
+/**
+ * Discovers new users.
+ */
 export const checkNewUsers = (list: string[], users: User[]) => {
   list
     .filter((v: string, i: number, a: string[]) => a.indexOf(v) === i) // Kopiert fra https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
