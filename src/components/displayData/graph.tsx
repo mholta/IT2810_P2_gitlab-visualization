@@ -46,10 +46,10 @@ const Graph = ({ data }: GraphProps) => {
 
   switch (data.chartType) {
     case 'line': {
-      return <Line data={displayData} />;
+      return <Line data={data} options={{ maintainAspectRatio: false }} />;
     }
     case 'bar': {
-      return <Bar data={displayData} />;
+      return <Bar data={data} options={{ maintainAspectRatio: false }} />;
     }
     default: {
       return <div></div>;

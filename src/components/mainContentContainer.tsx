@@ -137,9 +137,11 @@ const ScalableImage = withTheme(styled.img`
 const Container = styled.div`
   padding: 1rem;
   text-align: center;
-  width: 100%;
+  width: calc(100% - 2rem);
 `;
 const GraphWrapper = styled.div`
-  max-height: 80vh;
+  margin: auto;
+  height: 80vh;
+  width: 90vw;
 `;
 export default MainContentContainer;
