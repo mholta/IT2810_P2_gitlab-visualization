@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import { FilterContext } from '../../context/filter.context';
 
