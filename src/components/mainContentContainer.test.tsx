@@ -9,7 +9,7 @@ import {
 } from '../context/filter.initialValue';
 import { DataObject, User } from '../api/types';
 import { act } from 'react-dom/test-utils';
-import Graph from './displayData/graph';
+import Graph from './dataView/graph';
 
 jest.mock('../api/useApi');
 jest.mock('./displayData/graph');

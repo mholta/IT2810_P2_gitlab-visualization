@@ -15,6 +15,8 @@ interface ContextProviderProps {
 
 export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   const [state, setState] = useState<FilterObject>(initialFilterObject);
+  const [subState, setSubState] = useState<FilterObject>(initialFilterObject);
+
   const updateLocalStorage = (state: FilterObject) => {
     localStorage.setItem('category-state', JSON.stringify(state.category));
   };
@@ -29,21 +31,29 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
   }, [state]);
 
   const setSinceDate = (date: Date) =>
-    setState({ ...state, timeSpan: { ...state.timeSpan, since: date } });
+    setSubState({ ...state, timeSpan: { ...state.timeSpan, since: date } });
 
   const setUntilDate = (date: Date) =>
-    setState({ ...state, timeSpan: { ...state.timeSpan, until: date } });
+    setSubState({ ...state, timeSpan: { ...state.timeSpan, until: date } });
 
   const setUsersState = (usersList: User[]) =>
-    setState({ ...state, users: usersList });
+    setSubState({ ...state, users: usersList });
 
   const setCategory = (category: DataCategory) =>
-    setState({ ...state, category: category });
+    setSubState({ ...state, category: category });
 
-  const setListOrGraph = (listOrGraph: ListOrGraph) => {
-    setState({ ...state, listOrGraph: listOrGraph });
-  };
+  const setListOrGraph = (listOrGraph: ListOrGraph) =>
+    setSubState({ ...state, listOrGraph: listOrGraph });
+
+  const fetchData = () => setState(subState);
+
   const reset = () => {
+    setSubState({
+      category: DataCategory.COMMITS,
+      timeSpan: { since: getDateBeforeToday(14), until: getDateBeforeToday() },
+      listOrGraph: ListOrGraph.LIST,
+      users: []
+    });
     setState({
       category: DataCategory.COMMITS,
       timeSpan: { since: getDateBeforeToday(14), until: getDateBeforeToday() },
@@ -51,12 +61,14 @@ export const FilterContextProvider = ({ children }: ContextProviderProps) => {
       users: []
     });
   };
+
   const actions = {
     setSinceDate,
     setUntilDate,
     setUsersState,
     setCategory,
     setListOrGraph,
+    fetchData,
     reset
   };
 

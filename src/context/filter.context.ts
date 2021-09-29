@@ -14,7 +14,8 @@ export const FilterContext = createContext<FilterContextState>({
   setUsersState: () => {},
   setCategory: () => {},
   setListOrGraph: () => {},
-  reset: () => {},
+  fetchData: () => {},
+  reset: () => {}
 });
 
 export interface FilterContextState {
@@ -24,5 +25,6 @@ export interface FilterContextState {
   setUsersState: (userList: User[]) => void;
   setCategory: (category: DataCategory) => void;
   setListOrGraph: (listOrGraph: ListOrGraph) => void;
+  fetchData: () => void;
   reset: () => void;
 }

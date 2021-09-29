@@ -21,7 +21,7 @@ export interface FilterObject {
   listOrGraph: ListOrGraph;
 }
 
-const initialTimeSpan: TimeSpanObject = {
+export const initialTimeSpan: TimeSpanObject = {
   since: getDateBeforeToday(14),
   until: getDateBeforeToday()
 };
@@ -56,7 +56,7 @@ const getTimeSpanFromSessionStorage = (): TimeSpanObject | undefined => {
     );
 
     const timeSpan: TimeSpanObject = {
-      since: new Date( newTimeSpanState.since ),
+      since: new Date(newTimeSpanState.since),
       until: new Date(newTimeSpanState.until)
     };
 

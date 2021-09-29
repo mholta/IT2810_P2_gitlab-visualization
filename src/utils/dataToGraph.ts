@@ -1,5 +1,5 @@
 import { DataObject } from './../api/types';
-import { ChartData } from '../components/displayData/graph';
+import { ChartData } from '../components/dataView/graph';
 import { getDateMinusDays, getDaysBetween } from './date';
 import { User } from '../api/types';
 

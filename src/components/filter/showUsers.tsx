@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { Checkbox, FormControlLabel, withTheme } from '@material-ui/core';
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { FilterContext } from '../../context/filter.context';
@@ -36,9 +36,20 @@ const ShowUsers = () => {
   );
 };
 
-const ShowUsersWrapper = styled.div`
+const ShowUsersWrapper = withTheme(styled.div`
   display: flex;
   flex-direction: vertical;
-`;
+  flex-wrap: wrap;
+
+  ${(props) => props.theme.breakpoints.up('xs')} {
+    width: 100vw;
+  }
+  ${(props) => props.theme.breakpoints.up('md')} {
+    width: 30vw;
+  }
+  ${(props) => props.theme.breakpoints.up('lg')} {
+    width: 20vw;
+  }
+`);
 
 export default ShowUsers;

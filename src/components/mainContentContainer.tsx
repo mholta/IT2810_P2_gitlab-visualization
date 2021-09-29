@@ -1,9 +1,7 @@
 import React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../context/filter.context';
-import apiSwitch, { LoadingState } from '../api/useApi';
-import List from './commits/list';
-import Graph, { ChartData } from './displayData/graph';
+import apiSwitch from '../api/useApi';
 import { DataCategory, ListOrGraph } from '../context/filter.initialValue';
 import {
   produceBarChartDataFromDataObjects,
@@ -11,8 +9,10 @@ import {
 } from '../utils/dataToGraph';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import { DataObject } from '../api/types';
+import { DataObject, LoadingState } from '../api/types';
 import { withTheme } from '@material-ui/core';
+import Graph, { ChartData } from './dataView/graph';
+import List from './dataView/list';
 
 /**
  * Main container includes a scalable image and .

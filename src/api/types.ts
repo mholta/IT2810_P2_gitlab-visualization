@@ -9,3 +9,9 @@ export interface User {
   show: boolean;
   color: string;
 }
+
+export enum LoadingState {
+  LOADING = 'loading',
+  ERROR = 'error',
+  LOADED = 'loaded'
+}

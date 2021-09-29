@@ -1,13 +1,7 @@
 import { DataCategory } from '../context/filter.initialValue';
 import { checkNewUsers } from '../utils/list';
 import { fetchCommits, fetchIssues } from './api';
-import { DataObject, User } from './types';
-
-export enum LoadingState {
-  LOADING = 'loading',
-  ERROR = 'error',
-  LOADED = 'loaded'
-}
+import { DataObject, LoadingState, User } from './types';
 
 // Uses API to get data and add newly discovered users.
 const apiSwitch = async (
@@ -28,16 +22,13 @@ const apiSwitch = async (
           // Map data to DataObjects
           const commits: DataObject[] = data
             .filter((commit: any) => commit.committed_date)
-            .map(
-              (commit: any): DataObject => {
-                return {
-                  date: new Date(commit.committed_date),
-                  title: commit.title,
-                  user:
-                    users[users.map((u) => u.id).indexOf(commit.author_name)]
-                };
-              }
-            )
+            .map((commit: any): DataObject => {
+              return {
+                date: new Date(commit.committed_date),
+                title: commit.title,
+                user: users[users.map((u) => u.id).indexOf(commit.author_name)]
+              };
+            })
             .filter((commit: DataObject) => commit.user);
 
           return {
@@ -68,10 +59,9 @@ const apiSwitch = async (
               (issue: any): DataObject => ({
                 date: new Date(issue.closed_at),
                 title: issue.title,
-                user:
-                  users[
-                    users.map((u) => u.id).indexOf(issue.assignee?.name ?? '')
-                  ]
+                user: users[
+                  users.map((u) => u.id).indexOf(issue.assignee?.name ?? '')
+                ]
               })
             )
             .filter((issue: DataObject) => issue.user);

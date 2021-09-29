@@ -1,44 +1,44 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, ButtonGroup } from '@material-ui/core';
-import React, { useContext } from 'react';
 import { FilterContext } from '../../context/filter.context';
 import { ListOrGraph } from '../../context/filter.initialValue';
-import { LayoutContext } from '../../context/layout.context';
 
 /**
  * Chooses whether to display data as a list or graph.
  */
 const ViewTypeToggle = () => {
   const {
-    state: { listOrGraph },
+    state: { listOrGraph: valueFromContext },
     setListOrGraph
   } = useContext(FilterContext);
 
-  const { setMenuOpen } = useContext(LayoutContext);
-  const closeMenu = () => setMenuOpen(false);
+  const [localValue, setLocalValue] = useState<ListOrGraph>(valueFromContext);
+
+  useEffect(() => {
+    setLocalValue(valueFromContext);
+  }, [valueFromContext]);
 
   return (
-    <div>
-      <ButtonGroup>
-        <Button
-          onClick={() => {
-            setListOrGraph(ListOrGraph.LIST);
-            closeMenu();
-          }}
-          color={listOrGraph === ListOrGraph.LIST ? 'secondary' : 'default'}
-        >
-          List
-        </Button>
-        <Button
-          onClick={() => {
-            setListOrGraph(ListOrGraph.GRAPH);
-            closeMenu();
-          }}
-          color={listOrGraph === ListOrGraph.GRAPH ? 'secondary' : 'default'}
-        >
-          Graph
-        </Button>
-      </ButtonGroup>
-    </div>
+    <ButtonGroup>
+      <Button
+        onClick={() => {
+          setLocalValue(ListOrGraph.LIST);
+          setListOrGraph(ListOrGraph.LIST);
+        }}
+        color={localValue === ListOrGraph.LIST ? 'secondary' : 'default'}
+      >
+        {ListOrGraph.LIST}
+      </Button>
+      <Button
+        onClick={() => {
+          setLocalValue(ListOrGraph.GRAPH);
+          setListOrGraph(ListOrGraph.GRAPH);
+        }}
+        color={localValue === ListOrGraph.GRAPH ? 'secondary' : 'default'}
+      >
+        {ListOrGraph.GRAPH}
+      </Button>
+    </ButtonGroup>
   );
 };
 

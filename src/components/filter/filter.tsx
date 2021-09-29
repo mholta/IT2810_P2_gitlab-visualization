@@ -3,6 +3,7 @@ import TimeSpan from './timeSpan';
 import CategorySelect from './categorySelect';
 import ShowUsers from './showUsers';
 import ViewTypeToggle from './viewTypeToggle';
+import ActionButton from './actionButton';
 
 /**
  * Filter for deciding what data should be fetched from GitLab.
@@ -14,6 +15,7 @@ const Filter = () => {
       <TimeSpan />
       <ShowUsers />
       <ViewTypeToggle />
+      <ActionButton />
     </FilterWrapper>
   );
 };

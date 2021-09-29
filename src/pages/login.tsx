@@ -8,28 +8,16 @@ import {
   Typography,
   TextField
 } from '@material-ui/core';
-import React, {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState
-} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
 import { FilterContext } from '../context/filter.context';
-import { DataCategory, ListOrGraph } from '../context/filter.initialValue';
-import { getDateBeforeToday } from '../utils/date';
 
 /**
  * Login page. User submits ProjectID and Access Token to display data from their GitLab project.
  */
 const Login = () => {
   const history = useHistory();
-  const {
-    state: { users, category },
-    reset
-  } = useContext(FilterContext);
-  console.log(users, category);
+  const { reset } = useContext(FilterContext);
 
   useEffect(() => {
     localStorage.removeItem('token');
@@ -41,11 +29,13 @@ const Login = () => {
     sessionStorage.removeItem('anonymize');
     sessionStorage.removeItem('time-span-state');
     reset();
-    console.log('login', users, category);
+    // eslint-disable-next-line
   }, []);
+
   const location: any = useLocation();
   const [remember, setRemember] = useState(false);
   const [anonymize, setAnonymize] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -129,13 +119,7 @@ const Login = () => {
             }
             label="Anonymize userdata"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            // sx={{ mt: 3, mb: 2 }}
-          >
+          <Button type="submit" fullWidth variant="contained" color="primary">
             Use this repo
           </Button>
         </Box>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTheme, withTheme } from '@material-ui/core';
 import styled from 'styled-components';
 import ListCard from './list.card';
@@ -6,6 +6,7 @@ import { DataObject, User } from '../../api/types';
 import { ViewStreamOutlined, ViewWeekOutlined } from '@material-ui/icons';
 import IconButtonWithLabel from '../buttonWithLabel';
 import { useWindowWidth } from '@react-hook/window-size';
+import { FilterContext } from '../../context/filter.context';
 
 interface ListProps {
   commits: DataObject[];
@@ -27,6 +28,10 @@ const List = ({ commits, users }: ListProps) => {
     }
   } = useTheme();
 
+  const {
+    state: { category }
+  } = useContext(FilterContext);
+
   useEffect(() => {
     const showColumnToggleBasedOnWidth = width > md;
 
@@ -42,11 +47,6 @@ const List = ({ commits, users }: ListProps) => {
   const columns = users.filter((u) => u.show).length;
 
   const getColumnNum = (user: User) => users.indexOf(user) + 1;
-
-  const getUser = (user: User) =>
-    users.map((user) => user).indexOf(user) !== -1
-      ? users[users.indexOf(user)]
-      : null;
 
   // make table-bars stay at right place
   const scrollingElement = document.getElementById('scroll');
@@ -82,7 +82,7 @@ const List = ({ commits, users }: ListProps) => {
                   </ColumnTitle>
                 ))
             ) : (
-              <ColumnTitle>Alle commits</ColumnTitle>
+              <ColumnTitle>All {category.toLowerCase()}</ColumnTitle>
             )}
           </ColumnTitlesWrapper>
         </TopBarWrapper>
@@ -210,8 +210,9 @@ const InnerScrollWrapper = styled.div`
 `;
 
 const MainWrapper = withTheme(styled.div<ColumnsProps>`
+  text-align: left;
   border: 2px solid ${(props) => props.theme.palette.grey[200]};
-  max-width: min(100%, var(--maximum));
+  max-width: max(var(--lg), var(--maximum));
   --lg: ${(props) => props.theme.breakpoints.values['lg']}px;
   ${(props) => !props.showColumns && 'max-width: var(--lg)'};
   border-radius: 1rem;

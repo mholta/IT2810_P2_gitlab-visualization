@@ -47,7 +47,6 @@ const TimeSpan = () => {
           label="Fra"
           value={since}
           onChange={setFromDate}
-          enableClearButton
         />
         <DatePicker
           id="date-picker-to"

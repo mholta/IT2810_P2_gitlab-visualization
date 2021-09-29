@@ -1,5 +1,3 @@
-import { IconButton } from '@material-ui/core';
-import { Cancel } from '@material-ui/icons';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import styled from 'styled-components';
@@ -9,22 +7,12 @@ interface DatePickerProps {
   value: Date | null;
   id: string;
   label: string;
-  enableClearButton?: boolean;
 }
 
 /**
  * Calendar element for selecting dates.
  */
-const DatePicker = ({
-  onChange,
-  value,
-  id,
-  label,
-  enableClearButton
-}: DatePickerProps) => {
-  // Remove date by setting value to null
-  const handleClear = () => onChange(null);
-
+const DatePicker = ({ onChange, value, id, label }: DatePickerProps) => {
   return (
     <DatePickerWrapper>
       <KeyboardDatePicker
@@ -41,13 +29,6 @@ const DatePicker = ({
         }}
         disableFuture
       />
-      {enableClearButton && (
-        <ClearButtonWrapper>
-          <IconButton onClick={handleClear}>
-            <Cancel />
-          </IconButton>
-        </ClearButtonWrapper>
-      )}
     </DatePickerWrapper>
   );
 };
@@ -55,10 +36,6 @@ const DatePicker = ({
 const DatePickerWrapper = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const ClearButtonWrapper = styled.div`
-  margin-top: 1.3rem;
 `;
 
 export default DatePicker;
