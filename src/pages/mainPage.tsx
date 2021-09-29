@@ -1,3 +1,4 @@
+import Footer from '../components/footer';
 import Header from '../components/header';
 import MainContentContainer from '../components/mainContentContainer';
 import SideBar from '../components/sidebar';
@@ -11,6 +12,7 @@ const MainPage = () => {
       <Header />
       <SideBar />
       <MainContentContainer />
+      <Footer />
     </div>
   );
 };
