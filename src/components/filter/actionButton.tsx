@@ -12,14 +12,16 @@ const ActionButton = () => {
     setMenuOpen(false);
   };
   return (
-    <Button
-      onClick={handleClick}
-      style={{ marginTop: '2rem' }}
-      variant="contained"
-      color="secondary"
-    >
-      Update filter
-    </Button>
+    <div>
+      <Button
+        onClick={handleClick}
+        style={{ marginTop: '2rem' }}
+        variant="contained"
+        color="secondary"
+      >
+        Update filter
+      </Button>
+    </div>
   );
 };
 
