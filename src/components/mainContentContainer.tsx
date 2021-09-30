@@ -22,12 +22,10 @@ const MainContentContainer = () => {
 
   // Go to login screen if there is ProjectID and access token is not stored in browser
   if (
-    !(
-      (localStorage.getItem('projectID') !== null ||
-        sessionStorage.getItem('projectID') !== null) &&
-      (localStorage.getItem('token') !== null ||
-        sessionStorage.getItem('token') !== null)
-    )
+    (localStorage.getItem('projectID') === null &&
+      sessionStorage.getItem('projectID') === null) ||
+    (localStorage.getItem('token') === null &&
+      sessionStorage.getItem('token') === null)
   ) {
     history.replace('/login');
   }
@@ -54,19 +52,28 @@ const MainContentContainer = () => {
 
   // Gets data from API when filter is updated
   useEffect(() => {
-    apiSwitch(since, until, category, users).then((apiResult: any) => {
-      if (apiResult.loadingState === LoadingState.ERROR) {
-        history.replace({
-          pathname: '/login',
-          state: 'There was an error with the projectID or the Access-token'
-        });
-      } else {
-        setData(apiResult.data);
-        setLoadingState(apiResult.loadingState);
-        setUsersState(apiResult.updatedUsers);
-        // console.log('users', users);
-      }
-    });
+    if (
+      (localStorage.getItem('projectID') === null &&
+        sessionStorage.getItem('projectID') === null) ||
+      (localStorage.getItem('token') === null &&
+        sessionStorage.getItem('token') === null)
+    ) {
+      history.replace('/login');
+    } else {
+      apiSwitch(since, until, category, users).then((apiResult: any) => {
+        if (apiResult.loadingState === LoadingState.ERROR) {
+          history.replace({
+            pathname: '/login',
+            state: 'There was an error with the projectID or the Access-token'
+          });
+        } else {
+          setData(apiResult.data);
+          setLoadingState(apiResult.loadingState);
+          setUsersState(apiResult.updatedUsers);
+          // console.log('users', users);
+        }
+      });
+    }
     // eslint-disable-next-line
   }, [since, until, category, users]);
 
