@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FilterContext } from '../../context/filter.context';
 import { DataCategory } from '../../context/filter.initialValue';
 
@@ -12,9 +12,18 @@ const CategorySelect = () => {
     setCategory
   } = useContext(FilterContext);
 
+  const [localCategory, setLocalCategory] = useState<DataCategory>(category);
+
+  useEffect(() => {
+    setLocalCategory(category);
+  }, [category]);
+
   // Update filter context with selected category
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setCategory(event.target.value as DataCategory);
+    const newCategory: DataCategory = event.target.value as DataCategory;
+
+    setLocalCategory(newCategory);
+    setCategory(newCategory);
   };
 
   return (
@@ -22,7 +31,7 @@ const CategorySelect = () => {
       <InputLabel>Type</InputLabel>
       <Select
         color="primary"
-        value={category}
+        value={localCategory}
         role="presentation"
         onChange={handleChange}
       >

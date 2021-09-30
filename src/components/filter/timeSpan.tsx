@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import styled from 'styled-components';
@@ -18,10 +18,19 @@ const TimeSpan = () => {
     setUntilDate
   } = useContext(FilterContext);
 
+  const [localSince, setLocalSince] = useState<Date>(since);
+  const [localUntil, setLocalUntil] = useState<Date>(until);
+
+  useEffect(() => {
+    setLocalSince(since);
+    setLocalUntil(until);
+  }, [since, until]);
+
   // Updates filter context with new since date
   const setFromDate = (date: Date | null) => {
     if (!date) return;
 
+    setLocalSince(date);
     setSinceDate(date);
 
     // Update until date if it is before the new since date
@@ -32,6 +41,7 @@ const TimeSpan = () => {
   const setToDate = (date: Date | null) => {
     if (!date) return;
 
+    setLocalUntil(date);
     setUntilDate(date);
 
     // Update since date if it is after the new until date
@@ -45,13 +55,13 @@ const TimeSpan = () => {
         <DatePicker
           id="date-picker-from"
           label="Fra"
-          value={since}
+          value={localSince}
           onChange={setFromDate}
         />
         <DatePicker
           id="date-picker-to"
           label="Til"
-          value={until}
+          value={localUntil}
           onChange={setToDate}
         />
       </TimeSpanWrapper>

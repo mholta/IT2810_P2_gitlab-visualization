@@ -8,33 +8,34 @@ import { ListOrGraph } from '../../context/filter.initialValue';
  */
 const ViewTypeToggle = () => {
   const {
-    state: { listOrGraph: valueFromContext },
+    state: { listOrGraph },
     setListOrGraph
   } = useContext(FilterContext);
 
-  const [localValue, setLocalValue] = useState<ListOrGraph>(valueFromContext);
+  const [localListOrGraph, setLocalListOrGraph] =
+    useState<ListOrGraph>(listOrGraph);
 
   useEffect(() => {
-    setLocalValue(valueFromContext);
-  }, [valueFromContext]);
+    setLocalListOrGraph(listOrGraph);
+  }, [listOrGraph]);
 
   return (
     <ButtonGroup>
       <Button
         onClick={() => {
-          setLocalValue(ListOrGraph.LIST);
+          setLocalListOrGraph(ListOrGraph.LIST);
           setListOrGraph(ListOrGraph.LIST);
         }}
-        color={localValue === ListOrGraph.LIST ? 'secondary' : 'default'}
+        color={localListOrGraph === ListOrGraph.LIST ? 'secondary' : 'default'}
       >
         {ListOrGraph.LIST}
       </Button>
       <Button
         onClick={() => {
-          setLocalValue(ListOrGraph.GRAPH);
+          setLocalListOrGraph(ListOrGraph.GRAPH);
           setListOrGraph(ListOrGraph.GRAPH);
         }}
-        color={localValue === ListOrGraph.GRAPH ? 'secondary' : 'default'}
+        color={localListOrGraph === ListOrGraph.GRAPH ? 'secondary' : 'default'}
       >
         {ListOrGraph.GRAPH}
       </Button>
