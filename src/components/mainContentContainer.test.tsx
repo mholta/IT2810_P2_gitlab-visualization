@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import apiSwitch, { LoadingState } from '../api/useApi';
+import apiSwitch from '../api/useApi';
 import '@testing-library/jest-dom/extend-expect';
 import MainContentContainer from './mainContentContainer';
 import { FilterContext } from '../context/filter.context';
@@ -7,12 +7,12 @@ import {
   initialFilterObject,
   ListOrGraph
 } from '../context/filter.initialValue';
-import { DataObject, User } from '../api/types';
+import { DataObject, LoadingState, User } from '../api/types';
 import { act } from 'react-dom/test-utils';
 import Graph from './dataView/graph';
 
 jest.mock('../api/useApi');
-jest.mock('./displayData/graph');
+jest.mock('./dataView/graph');
 
 const mockApiSwitch = apiSwitch as jest.Mock<any>;
 const mockGraph = Graph as jest.Mock<any>;
@@ -111,7 +111,8 @@ describe('mainContentContainer renders correctly', () => {
             setSinceDate: () => {},
             setUntilDate: () => {},
             setUsersState: () => {},
-            reset: () => {}
+            reset: () => {},
+            fetchData: () => {}
           }}
         >
           <MainContentContainer />
