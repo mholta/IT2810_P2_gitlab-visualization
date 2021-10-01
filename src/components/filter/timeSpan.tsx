@@ -50,7 +50,6 @@ const TimeSpan = () => {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      {since.toLocaleDateString()}
       <TimeSpanWrapper>
         <DatePicker
           id="date-picker-from"

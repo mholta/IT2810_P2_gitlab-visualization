@@ -43,7 +43,7 @@ const CategorySelect = () => {
             key={text}
             value={text}
           >
-            {text}
+            {text.substr(0, 1).toUpperCase() + text.substr(1).toLowerCase()}
           </MenuItem>
         ))}
       </Select>

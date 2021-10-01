@@ -44,6 +44,10 @@ const ShowUsersWrapper = withTheme(styled.div`
   ${(props) => props.theme.breakpoints.up('xs')} {
     width: 100vw;
   }
+  ${(props) => props.theme.breakpoints.up('sm')} {
+    width: auto;
+    min-width: 50vw;
+  }
   ${(props) => props.theme.breakpoints.up('md')} {
     width: 30vw;
   }
