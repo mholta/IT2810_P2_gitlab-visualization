@@ -24,7 +24,7 @@ const Filter = () => {
 const FilterWrapper = withTheme(styled.div`
   padding: 1rem;
   ${(props) => props.theme.breakpoints.up('xs')} {
-    width: 100vw;
+    width: calc(100vw - 2rem);
   }
   ${(props) => props.theme.breakpoints.up('sm')} {
     max-width: 600px;
