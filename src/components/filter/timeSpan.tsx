@@ -71,6 +71,7 @@ const TimeSpan = () => {
 const TimeSpanWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  gap: 5px;
 `;
 
 export default TimeSpan;
