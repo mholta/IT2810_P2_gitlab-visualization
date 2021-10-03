@@ -4,6 +4,7 @@ import CategorySelect from './categorySelect';
 import ShowUsers from './showUsers';
 import ViewTypeToggle from './viewTypeToggle';
 import ActionButton from './actionButton';
+import { withTheme } from '@material-ui/core';
 
 /**
  * Filter for deciding what data should be fetched from GitLab.
@@ -20,8 +21,21 @@ const Filter = () => {
   );
 };
 
-const FilterWrapper = styled.div`
+const FilterWrapper = withTheme(styled.div`
   padding: 1rem;
-`;
+  ${(props) => props.theme.breakpoints.up('xs')} {
+    width: 100vw;
+  }
+  ${(props) => props.theme.breakpoints.up('sm')} {
+    max-width: 600px;
+    width: 80vw;
+  }
+  ${(props) => props.theme.breakpoints.up('md')} {
+    width: 55vw;
+  }
+  ${(props) => props.theme.breakpoints.up('lg')} {
+    width: 40vw;
+  }
+`);
 
 export default Filter;

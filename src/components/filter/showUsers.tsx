@@ -40,20 +40,6 @@ const ShowUsersWrapper = withTheme(styled.div`
   display: flex;
   flex-direction: vertical;
   flex-wrap: wrap;
-
-  ${(props) => props.theme.breakpoints.up('xs')} {
-    width: 100vw;
-  }
-  ${(props) => props.theme.breakpoints.up('sm')} {
-    width: auto;
-    min-width: 50vw;
-  }
-  ${(props) => props.theme.breakpoints.up('md')} {
-    width: 30vw;
-  }
-  ${(props) => props.theme.breakpoints.up('lg')} {
-    width: 20vw;
-  }
 `);
 
 export default ShowUsers;

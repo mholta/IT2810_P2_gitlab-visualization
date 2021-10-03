@@ -69,9 +69,8 @@ const TimeSpan = () => {
 };
 
 const TimeSpanWrapper = styled.div`
-  display: grid;
-  grid-template-columns: auto auto; // to not get empty space after from picker
-  gap: 2rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export default TimeSpan;

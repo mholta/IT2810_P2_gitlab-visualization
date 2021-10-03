@@ -17,19 +17,20 @@ const SideBar = () => {
   const { state, setMenuOpen } = useContext(LayoutContext);
 
   // Toogle sidebar on eventchange and function-call
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event &&
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-        return;
-      }
+  const toggleDrawer = (open: boolean) => (
+    event: React.KeyboardEvent | React.MouseEvent
+  ) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
 
-      setMenuOpen(open);
-    };
+    setMenuOpen(open);
+  };
 
   return (
     <SwipeableDrawer
@@ -39,30 +40,21 @@ const SideBar = () => {
       onClose={toggleDrawer(false)}
     >
       <GridWithMediaQueries container justifyContent="flex-end">
-        <IconButton onClick={toggleDrawer(false)}>
+        <IconButtonNoPadding onClick={toggleDrawer(false)}>
           <CloseSharpIcon />
-        </IconButton>
+        </IconButtonNoPadding>
       </GridWithMediaQueries>
       <Filter />
     </SwipeableDrawer>
   );
 };
 
-/**
- * Set how much of screen sidebar should cover depending on size of screen.
- */
 const GridWithMediaQueries = withTheme(styled(Grid)`
   padding: 1rem;
-  ${(props) => props.theme.breakpoints.up('xs')} {
-    width: 100vw;
-  }
-  ${(props) => props.theme.breakpoints.up('md')} {
-    width: auto;
-    min-width: 30vw;
-  }
-  ${(props) => props.theme.breakpoints.up('lg')} {
-    min-width: 20vw;
-  }
+`);
+
+const IconButtonNoPadding = withTheme(styled(IconButton)`
+  padding: 0;
 `);
 
 export default SideBar;
